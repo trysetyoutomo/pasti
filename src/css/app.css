@@ -4,6 +4,10 @@
 }
 
 /* Your app custom styles here */
+
+.toolbar{
+  background-color:#FAFAFA;
+}
 .member-img{
   height: 40vw;
   background-size: cover;
@@ -17,4 +21,14 @@
 
 .text-left{
   text-align: left;
+}
+
+.tab-link-active{
+  i{
+    color:#E91E63;
+  }
+}
+
+.md .tabbar i.icon::before, .md .tabbar-icons i.icon::before{
+  background-color: transparent;
 }
