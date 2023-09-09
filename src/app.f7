@@ -41,22 +41,19 @@
       <div class="toolbar toolbar-bottom tabbar-icons">
         <div class="toolbar-inner">
           <a href="#view-home" class="tab-link tab-link-active">
-            <i class="icon f7-icons if-not-md">house_fill</i>
-            <i class="icon material-icons if-md">home</i>
-            <span class="tabbar-label">Home</span>
+            <i class="icon material-icons if-md">family_restroom</i>
+            <span class="tabbar-label">Pantau</span>
           </a>
           <a href="#view-catalog" class="tab-link">
-            <i class="icon f7-icons if-not-md">square_list_fill</i>
-            <i class="icon material-icons if-md">view_list</i>
-            <span class="tabbar-label">Catalog</span>
+            <i class="icon material-icons if-md">contact_support</i>
+            <span class="tabbar-label">Tanya Jawab</span>
           </a>
           <a href="#view-settings" class="tab-link">
             <i class="icon f7-icons if-not-md">gear</i>
-            <i class="icon material-icons if-md">settings</i>
-            <span class="tabbar-label">Settings</span>
+            <i class="icon material-icons if-md">notifications_active</i>
+            <span class="tabbar-label">Alarm</span>
           </a>
           <a href="#view-settings" class="tab-link">
-            <i class="icon f7-icons if-not-md">gear</i>
             <i class="icon material-icons if-md">person</i>
             <span class="tabbar-label">Akun saya</span>
           </a>
