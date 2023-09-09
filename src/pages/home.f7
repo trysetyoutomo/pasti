@@ -111,7 +111,7 @@
 </template>
 <script>
   import moment from 'moment';  
-    async function getUsers(){
+  async function getUsers(){
     try {
       const apiUrl = 'http://localhost:5173/pasti/api/user';
       const response = await fetch(apiUrl);

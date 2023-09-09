@@ -13,17 +13,50 @@
     </div>
   </div>
   <div class="page-content">
-    <div class="block-title">balita Tracker</div>
+    <div class="block-title">Balita Tracker</div>
     <div class="block">  
       <div class="grid grid-cols-1">
         1 tahun 10 bulan 1 hari
       </div>
+ 
+
+    <div class="grid grid-cols-3">
+      <div class="text-left">Tinggi <br/> <b>${member.tinggi}</b></div>
+      <div class="text-left">Berat Badan <br/> <b>${member.berat}</b></div>
+      <div class="text-left">Usia <br/> <b>${member.tinggi} </b></div>
     </div>
+
+    <h3>Aktifitas yang perlu dilakukan</h3>
+    <ul>
+      ${member.aktivitas_rekomendasi.map((a) => $h`
+      <li>${a}</li>
+      `)}
+    </ul>
+
+  </div>
+
+
   </div>
 </div>
 </template>
 <script>
-export default () => {
+  async function getDetailUser(){
+    try {
+      const apiUrl = 'http://localhost:5173/pasti/api/user/aktivitas/hari/123';
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();      
+      return data.data;
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+
+export default async () => {
+  let member = await getDetailUser();
+  
   return $render;
 };
 </script>
