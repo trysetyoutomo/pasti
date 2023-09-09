@@ -1,0 +1,30 @@
+{
+  "cwd": "C:\\xampp\\htdocs\\pasti",
+  "type": [
+    "cordova"
+  ],
+  "name": "pasti",
+  "framework": "core",
+  "template": "tabs",
+  "bundler": "vite",
+  "cssPreProcessor": false,
+  "theming": {
+    "customColor": false,
+    "color": "#007aff",
+    "darkMode": false,
+    "iconFonts": true
+  },
+  "customBuild": false,
+  "pkg": "io.framework7.pasti",
+  "cordova": {
+    "folder": "cordova",
+    "platforms": [
+      "ios"
+    ],
+    "plugins": [
+      "cordova-plugin-statusbar",
+      "cordova-plugin-keyboard",
+      "cordova-plugin-splashscreen"
+    ]
+  }
+}
