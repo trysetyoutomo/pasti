@@ -22,7 +22,7 @@
       </div>
       ${products.value.length === 3 && $h`
       <div class="block">
-        <button class="button button-fill" @click=${addProduct}>Add Product</Button>
+        <button class="button button-fill" @click=${addProduct}>Add Product xxxxxx</Button>
       </div>
       `}
     </div>

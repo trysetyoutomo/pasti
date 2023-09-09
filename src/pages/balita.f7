@@ -1,0 +1,29 @@
+<template>
+<div class="page" data-name="about">
+  <div class="navbar">
+    <div class="navbar-bg"></div>
+    <div class="navbar-inner sliding">
+      <div class="left">
+        <a href="#" class="link back">
+          <i class="icon icon-back"></i>
+          <span class="if-not-md">Back</span>
+        </a>
+      </div>
+      <div class="title">Balita Tracker</div>
+    </div>
+  </div>
+  <div class="page-content">
+    <div class="block-title">balita Tracker</div>
+    <div class="block">  
+      <div class="grid grid-cols-1">
+        1 tahun 10 bulan 1 hari
+      </div>
+    </div>
+  </div>
+</div>
+</template>
+<script>
+export default () => {
+  return $render;
+};
+</script>

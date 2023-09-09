@@ -10,6 +10,9 @@ import DynamicRoutePage from '../pages/dynamic-route.f7';
 import RequestAndLoad from '../pages/request-and-load.f7';
 import NotFoundPage from '../pages/404.f7';
 
+import Balita from '../pages/balita.f7';
+
+
 var routes = [
   {
     path: '/',
@@ -18,6 +21,10 @@ var routes = [
   {
     path: '/about/',
     component: AboutPage,
+  },
+  {
+    path: '/balita/',
+    component: Balita,
   },
   {
     path: '/form/',
