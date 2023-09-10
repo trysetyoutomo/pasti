@@ -5,6 +5,21 @@
 
 /* Your app custom styles here */
 
+.page-content{
+  width: 100vw;
+  overflow-x: hidden;
+}
+
+body .block{
+  color:#8C8A8A!important;
+  font-family: 'Work Sans', sans-serif!important;
+  /* background-color: #FAFAFA; */
+}
+
+.card{
+  background:white;
+  padding: 0.5rem;
+}
 .toolbar{
   background-color:#FAFAFA;
 }
@@ -31,4 +46,123 @@
 
 .md .tabbar i.icon::before, .md .tabbar-icons i.icon::before{
   background-color: transparent;
+}
+
+/* stepper start */
+.stepper {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  /* background-color: #f2f2f2; */
+  padding: 20px;
+}
+
+.step-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 15px;
+}
+
+.step {
+  width: 30px;
+  height: 30px;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  background-color: #fff;
+  z-index: 2;
+}
+
+.line {
+  flex: 1;
+  height: 2px;
+  background-color: #ccc;
+  margin: 5px 0;
+  position: relative;
+  bottom: 5px;
+}
+
+.label {
+  text-align: center;
+  font-size: 12px;
+}
+
+.step.active {
+  background-color: #007bff;
+  color: #fff;
+  border-color: #007bff;
+}
+
+.line.active {
+  background-color: #007bff;
+}
+
+@media (max-width: 768px) {
+  .step-container {
+      margin: 0 5px;
+  }
+
+  .step {
+      width: 10px;
+      height: 10px;
+      font-size: 12px;
+  }
+
+  .line {
+      margin: 2px 0;
+  }
+
+  .label {
+      font-size: 10px;
+  }
+}
+/* stepper end */
+
+/* gauge chart start */
+#myChart{height: 100%;width: 100%;min-height: 200px;}
+/* gauge chart end */
+
+/* card date start */
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* Adjust the gap between cards */
+  flex-direction: row;
+  flex-wrap: nowrap;
+  margin: 1rem;
+  width: 100vw;
+  overflow: auto;
+}
+
+.card-date {
+  background-color: #eeeeee;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  text-align: center;
+  width: 11%; /* Adjust the card width as needed */
+
+}
+
+.card-day {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.date {
+  font-size: 1rem;
+  color: #666;
+}
+/* card date end  */
+
+
+.today{
+  background-color:#E91E63;
+}
+.today .card-day,.today .date{
+  color:white;
 }

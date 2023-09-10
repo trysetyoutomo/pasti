@@ -12,24 +12,30 @@
 
     <!-- Scrollable page content-->
     <div class="page-content">
+
+      ${families.map((member) => $h`
+      <a href="/balita/">
       <div class="card demo-card-header-pic">
-        <div style="background-image:url(https://images.pexels.com/photos/459976/pexels-photo-459976.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2)" valign="bottom" class="card-header member-img">
-          <span>Khumaira Syafira</span>
+        <div style="background-image:url(${member.foto})" valign="bottom" class="card-header member-img">
+          <span>${member.nama}</span>
           <i class="icon material-icons if-md" style="color:#60ba60;position: absolute;right: 1rem;top:1rem;">health_and_safety</i>
         </div>
         <div class="card-content card-content-padding">
           <div class="grid grid-cols-2" style="margin-bottom: 1rem;">
-            <div class="date"><i class="icon material-icons if-md">cake</i> <span style="top:3px;position: relative;">26 Februari 2023</span></div>
+            <div class="date"><i class="icon material-icons if-md">cake</i> <span style="top:3px;position: relative;">${moment(member.tgl_lahir, "YYYY-MM-DD").format("DD MMMM YYYY")}</span></div>
           </div>
           
           <div class="grid grid-cols-3">
-            <div class="text-left">Tinggi <br/> <b>100cm</b></div>
-            <div class="text-left">Berat Badan <br/> <b>50kg</b></div>
-            <div class="text-left" >Vaksin <br/> <b>12 Jan </b></div>
+            <div class="text-left">Tinggi <br/> <b>${member.tinggi}</b></div>
+            <div class="text-left">Berat Badan <br/> <b>${member.berat}</b></div>
+            <div class="text-left">Usia <br/> <b>${member.tinggi} </b></div>
           </div>
         </div>
       </div>
-      <div class="card demo-card-header-pic">
+      </a>
+        `)}
+
+      <!-- <div class="card demo-card-header-pic">
         <div style="background-image:url(https://cdn.framework7.io/placeholder/people-1000x600-6.jpg)" valign="bottom" class="card-header member-img">
           <span>Khumaira Syafira</span>
           <i class="icon material-icons if-md" style="color:#60ba60;position: absolute;right: 1rem;top:1rem;">health_and_safety</i>
@@ -45,7 +51,7 @@
             <div class="text-left" >Vaksin <br/> <b>12 Jan </b></div>
           </div>
         </div>
-      </div>
+      </div> -->
 
 
       <!--
@@ -104,7 +110,23 @@
   </div>
 </template>
 <script>
-export default () => {
+  import moment from 'moment';  
+  async function getUsers(){
+    try {
+      const apiUrl = 'http://localhost:5173/pasti/api/user';
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();      
+      return data.data.keluarga;
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+
+export default  async  function(props, {$onMounted}){   
+  let families = await getUsers();
   return $render;
 }
 </script>

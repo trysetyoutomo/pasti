@@ -1,0 +1,350 @@
+<template>
+<div class="page" data-name="about">
+  <div class="navbar">
+    <div class="navbar-bg"></div>
+    <div class="navbar-inner sliding">
+      <div class="left">
+        <a href="#" class="link back">
+          <i class="icon icon-back"></i>
+          <span class="if-not-md">Back</span>
+        </a>
+      </div>
+      <div class="title">Balita Tracker</div>
+    </div>
+  </div>
+  <div class="page-content">
+
+      <div class="card-container">
+      ${listDate.map((a) => $h`
+        <div class="card-date ${a.today === true ? 'today' : ''}" >
+          <div class="card-day">${a.day}</div>
+          <div class="date">${a.date}</div>
+      </div>
+      `)}
+        <!-- Add more cards as needed -->
+      </div>
+
+    <div class="">  
+    <div class="card">
+      Hi ${member.nama}
+    <div class="grid grid-cols-1" style="font-size: 1.2rem;font-weight: 500;">
+    ${ageDisplay}
+    </div>
+
+    <div class="block block-strong-ios block-outline-android">
+    <div class="area-chart area-chart-lines"></div>
+    </div>
+
+    <div class="grid grid-cols-3" style="margin-bottom: 1rem;margin-top:1rem">
+    <div class="text-center">Tinggi <br/> <b>${member.tinggi}</b></div>
+    <div class="text-center">Berat Badan <br/> <b>${member.berat}</b></div>
+    <div class="text-center">Usia <br/> <b>${member.tinggi} </b></div>
+    </div>
+    </div>
+    <div class="card">
+    <h3>Stunting Meter</h3>
+		<div id='myChart' style="overflow: visible!important;"></div>
+    <h4 style="text-align: center;color:${growthStatusColor};position: relative;bottom:4rem">${growthStatus}</h4>
+    </div>
+
+    <div class="card">
+      <h3>Aktifitas yang perlu dilakukan</h3>
+      <ul>
+        ${member.aktivitas_rekomendasi.map((a) => $h`
+        <li>${a}</li>
+        `)}
+      </ul>
+     
+    </div>
+  </div>
+
+
+  </div>
+</div>
+</template>
+<script>
+async function getDetailUser(){
+  try {
+    const apiUrl = 'http://localhost:5173/pasti/api/user/aktivitas/hari/123';
+    const response = await fetch(apiUrl);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();      
+    return data.data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+}
+
+function calculateAge(dateOfBirth) {
+    // Parse the date of birth string into a Date object
+    let dob = new Date(dateOfBirth);
+
+    // Get the current date
+    let currentDate = new Date();
+
+    // Calculate the difference in years, months, and days
+    let yearsDiff = currentDate.getFullYear() - dob.getFullYear();
+    let monthsDiff = currentDate.getMonth() - dob.getMonth();
+    let daysDiff = currentDate.getDate() - dob.getDate();
+
+    // Adjust for negative monthsDiff or daysDiff
+    if (daysDiff < 0) {
+        monthsDiff--;
+        let lastDayOfMonth = new Date(
+            currentDate.getFullYear(),
+            currentDate.getMonth(),
+            0
+        ).getDate();
+        daysDiff += lastDayOfMonth;
+    }
+
+    if (monthsDiff < 0) {
+        yearsDiff--;
+        monthsDiff += 12;
+    }
+
+    return {
+        years: yearsDiff,
+        months: monthsDiff,
+        days: daysDiff,
+    };
+}
+
+function formatDate(date,today) {
+    // Set the locale to Indonesian
+    moment.locale('id');
+
+    // Format the date with Moment.js
+
+    return {"day":moment(date).format('ddd'),"date":moment(date).format('DD'),'today':today};
+}
+
+ function detectGrowthStatus(tanggalLahir, berat, tinggi) {
+    // Data standar pertumbuhan berdasarkan kelompok usia
+    const standardGrowthData = {
+        '0-6 bulan': {
+            beratMin: 3.4,
+            beratMax: 7.2,
+            tinggiMin: 52,
+            tinggiMax: 70,
+        },
+        '6-12 bulan': {
+            beratMin: 6.5,
+            beratMax: 10.7,
+            tinggiMin: 66,
+            tinggiMax: 80,
+        },
+        '1-2 tahun': {
+            beratMin: 8.9,
+            beratMax: 14.2,
+            tinggiMin: 76,
+            tinggiMax: 91,
+        },
+        '2-3 tahun': {
+            beratMin: 10.2,
+            beratMax: 16.3,
+            tinggiMin: 84,
+            tinggiMax: 99,
+        },
+        '3-4 tahun': {
+            beratMin: 11.3,
+            beratMax: 18.3,
+            tinggiMin: 89,
+            tinggiMax: 105,
+        },
+        '4-5 tahun': {
+            beratMin: 12.2,
+            beratMax: 20.3,
+            tinggiMin: 94,
+            tinggiMax: 109,
+        },
+    };
+
+    // Menghitung usia anak berdasarkan tanggal lahir
+    const today = new Date();
+    const birthDate = new Date(tanggalLahir);
+    const ageInMonths = (today - birthDate) / (1000 * 60 * 60 * 24 * 30.44);
+
+    // Menentukan kelompok usia berdasarkan usia anak
+    let ageGroup;
+    if (ageInMonths >= 0 && ageInMonths <= 6) {
+        ageGroup = '0-6 bulan';
+    } else if (ageInMonths > 6 && ageInMonths <= 12) {
+        ageGroup = '6-12 bulan';
+    } else if (ageInMonths > 12 && ageInMonths <= 24) {
+        ageGroup = '1-2 tahun';
+    } else if (ageInMonths > 24 && ageInMonths <= 36) {
+        ageGroup = '2-3 tahun';
+    } else if (ageInMonths > 36 && ageInMonths <= 48) {
+        ageGroup = '3-4 tahun';
+    } else if (ageInMonths > 48 && ageInMonths <= 60) {
+        ageGroup = '4-5 tahun';
+    } else {
+        // Jika usia anak melebihi 5 tahun, tidak ada data standar pertumbuhan yang sesuai
+        return "Usia anak melebihi 5 tahun, data tidak tersedia.";
+    }
+
+    // Mendapatkan data standar pertumbuhan untuk kelompok usia yang sesuai
+    const growthData = standardGrowthData[ageGroup];
+
+    // Melakukan pengecekan berat dan tinggi terhadap standar pertumbuhan yang sesuai
+    if (berat >= growthData.beratMin && berat <= growthData.beratMax &&
+        tinggi >= growthData.tinggiMin && tinggi <= growthData.tinggiMax) {
+        return "Perkembangan normal";
+    } else if (berat < growthData.beratMin || tinggi < growthData.tinggiMin) {
+        return "Perkembangan rendah";
+    } else {
+        return "Perkembangan sedang";
+    }
+}
+
+
+export default async (props, { $f7, $onMounted, $onBeforeUnmount }) => {
+
+  let member = await getDetailUser();
+  // alert(member.tgl_lahir + " " +  member.berat + " "+ member.tinggi);
+  let growthStatus =  detectGrowthStatus(member.tgl_lahir, member.berat, member.tinggi);
+  // alert(growthStatus);
+  let valueGauge;
+
+  let growthStatusColor = "red";
+    if (growthStatus === "Perkembangan normal"){
+      valueGauge = 100;
+      growthStatusColor = "green";
+    }else{
+      valueGauge = 20;
+    }
+
+  let areaLines;
+
+  const dates = [];
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth();
+  for (let i = 0; i < 4; i += 1) {
+    dates.push(new Date(year, month - (3 - i)))
+  }
+  const axisDateFormat = Intl.DateTimeFormat(undefined, { month: 'short', year: 'numeric' })
+  const tooltipDateFormat = Intl.DateTimeFormat(undefined, { month: 'long', year: 'numeric' })
+  $onMounted(() => {
+
+  areaLines = $f7.areaChart.create({
+      el: '.area-chart-lines',
+      tooltip: true,
+      axis: true,
+      axisLabels: dates,
+      legend: true,
+      toggleDatasets: true,
+      lineChart: true,
+      formatAxisLabel(date) {
+        return axisDateFormat.format(date);
+      },
+      formatTooltipAxisLabel(date) {
+        return tooltipDateFormat.format(date);
+      },
+      datasets: [
+        // {
+        //   label: 'Red data',
+        //   color: '#f00',
+        //   values: [0, 300, 127, 47]
+        // },
+        // {
+        //   label: 'Blue data',
+        //   color: '#00f',
+        //   values: [0, 75, 133, 237]
+        // },
+        {
+          label: 'Berat Badan (kg)',
+          color: '#E91E63',
+          values: [3.5, 4.0, 5.1, 4.0]
+        },
+      ]
+    });
+
+
+
+    //g start
+    var myConfig7 = {
+      "type":"gauge",
+      "background-color":"#fff",
+      "scale-r":{
+        "aperture":200,
+        "values":"0:100:20",
+        "center":{
+          "size":3, 
+          "background-color":"red",
+          "border-color":"none"
+        },
+        "ring":{
+          "size":10,
+          "rules":[
+            {
+              "rule":"%v >= 0 && %v <= 20",
+              "background-color":"red"
+            },
+            {
+              "rule":"%v >= 20 && %v <= 40",
+              "background-color":"red"
+            },
+            {
+              "rule":"%v >= 40 && %v <= 60",
+              "background-color":"red"
+            },
+            {
+              "rule":"%v >= 60 && %v <= 80",
+              "background-color":"green"
+            },
+              {
+              "rule":"%v >= 80 && %v <=100",
+              "background-color":"green"
+            }
+          ]
+        },
+        "labels":["Rendah","","","","Normal",""]  //Scale Labels
+      },
+      "plot":{
+        "csize":"5%",
+        "size":"100%",
+        "background-color":"#000000"
+      },
+      "series":[
+        {"values":[valueGauge]}
+      ]
+    };
+
+
+    zingchart.render({ 
+      id : 'myChart', 
+      data : myConfig7, 
+      height : "100%", 
+      width: "100%"
+    });
+    // g end 
+  });
+
+    $onBeforeUnmount(() => {
+      areaLines.destroy();
+    });
+
+    let age = calculateAge(member.tgl_lahir);
+    let ageDisplay = `${age.years} tahun, ${age.months} bulan, ${age.days} hari`;
+
+    // list date
+    let listDate = [];
+    const now = new Date();
+    for (let i = -2; i <= 2; i++) {
+        const day = moment(today).add(i, 'days');
+        if (day.isSame(moment(), 'day')) {
+          listDate.push(formatDate(day,true));
+        }else{
+          listDate.push(formatDate(day,false));
+        }
+    };
+    
+   
+
+  return $render;
+};
+</script>
