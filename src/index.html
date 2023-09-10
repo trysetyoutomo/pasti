@@ -10,6 +10,9 @@
     * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
       * Enable inline JS: add 'unsafe-inline' to default-src
   -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
   <meta http-equiv="Content-Security-Policy" content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: content:">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
 
@@ -28,6 +31,11 @@
   <% if (TARGET === 'cordova') { %>
   <script src="cordova.js"></script>
   <% } %>
+  <script src="https://cdn.zingchart.com/zingchart.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+  <script src="https://momentjs.com/downloads/moment-with-locales.js"></script>
   <script type="module" src="./js/app.js"></script>
+
+
 </body>
 </html>
