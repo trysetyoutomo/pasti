@@ -31,7 +31,7 @@ var routes = [
     component: FormPage,
   },
   {
-    path: '/catalog/',
+    path: '/question/',
     component: CatalogPage,
   },
   {

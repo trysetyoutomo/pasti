@@ -50,6 +50,11 @@ var app = new Framework7({
         // Init cordova APIs (see cordova-app.js)
         cordovaApp.init(f7);
       }
+
+      if (localStorage.getItem("token") == null){
+        app.loginScreen.open('.login-screen');
+      }
+
     },
   },
 });

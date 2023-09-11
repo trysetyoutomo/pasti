@@ -1,19 +1,34 @@
 <template>
-  <div class="page" data-name="catalog">
+  <div class="page" data-name="question">
     <div class="navbar">
       <div class="navbar-bg"></div>
       <div class="navbar-inner sliding">
-        <div class="title">Catalog</div>
+        <div class="title">Tanya Jawab</div>
       </div>
     </div>
     <div class="page-content">
-      <div class="list list-strong list-dividers-ios list-outline-ios inset-md">
+      <!-- <div class="list list-strong list-dividers-ios list-outline-ios inset-md"> -->
+    <div class="list media-list list-outline-ios list-strong-ios list-dividers-ios">
+
         <ul>
-          ${products.value.map((product) => $h`
+          ${pertanyaan.value.map((p) => $h`
           <li>
-            <a class="item-content item-link" href="/product/${product.id}/">
+            <!-- <a class="item-content item-link" href="/product/${product.id}/">
               <div class="item-inner">
                 <div class="item-title">${product.title}</div>
+              </div>
+            </a> -->
+            <a class="item-link item-content" href="/product/${p  .id}/">
+              <div class="item-inner">
+                <div class="item-title-row">
+                  <div class="item-title">Facebook</div>
+                  <div class="item-after">17:14</div>
+                </div>
+                <div class="item-subtitle">New messages from John Doe</div>
+                <div class="item-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut
+                  turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit
+                  amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In
+                  vel dui laoreet, commodo augue id, pulvinar lacus.</div>
               </div>
             </a>
           </li>
@@ -29,8 +44,33 @@
   </div>
 </template>
 <script>
-  export default (props, { $store }) => {
-    const products = $store.getters.products;
+    async function getPertanyaan(){
+    try {
+      const apiUrl = 'http://cius.co.id/pasti/api/pertanyaan';
+      const requestOptions = {
+        method: 'GET', // or 'POST', 'PUT', 'DELETE', etc. depending on your API request
+        headers: {
+          'Authorization': `Bearer ` +  localStorage.getItem('token'),
+          'Content-Type': 'application/json', // Adjust the content type as needed
+        },
+        // Add any other options as needed (e.g., body for POST requests)
+      };
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();      
+      return data.data.pertanyaan;
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+
+  export default async (props, { $store })  =>  {
+    // const products = $store.getters.products;
+    let pertanyaan = await getPertanyaan();
+    console.log(pertanyaan);
+    
 
     const addProduct = () => {
       $store.dispatch('addProduct', {

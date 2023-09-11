@@ -13,6 +13,7 @@
     <!-- Scrollable page content-->
     <div class="page-content">
 
+
       ${families.map((member) => $h`
       <a href="/balita/">
       <div class="card demo-card-header-pic">
@@ -21,7 +22,7 @@
           <i class="icon material-icons if-md" style="color:#60ba60;position: absolute;right: 1rem;top:1rem;">health_and_safety</i>
         </div>
         <div class="card-content card-content-padding">
-          <div class="grid grid-cols-2" style="margin-bottom: 1rem;">
+          <div class="grid grid-cols" style="margin-bottom: 1rem;">
             <div class="date"><i class="icon material-icons if-md">cake</i> <span style="top:3px;position: relative;">${moment(member.tgl_lahir, "YYYY-MM-DD").format("DD MMMM YYYY")}</span></div>
           </div>
           
@@ -113,7 +114,15 @@
   import moment from 'moment';  
   async function getUsers(){
     try {
-      const apiUrl = 'http://localhost:5173/pasti/api/user';
+      const apiUrl = 'http://cius.co.id/pasti/api/user/1';
+      const requestOptions = {
+        method: 'GET', // or 'POST', 'PUT', 'DELETE', etc. depending on your API request
+        headers: {
+          'Authorization': `Bearer ` +  localStorage.getItem('token'),
+          'Content-Type': 'application/json', // Adjust the content type as needed
+        },
+        // Add any other options as needed (e.g., body for POST requests)
+      };
       const response = await fetch(apiUrl);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -127,6 +136,7 @@
 
 export default  async  function(props, {$onMounted}){   
   let families = await getUsers();
+  console.log(families);
   return $render;
 }
 </script>
