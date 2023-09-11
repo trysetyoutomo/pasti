@@ -32,7 +32,7 @@
     </div>
 
     <div class="block block-strong-ios block-outline-android">
-    <div class="area-chart area-chart-lines"></div>
+    <div class="area-chart area-chart-lines-2"></div>
     </div>
 
     <div class="grid grid-cols-3" style="margin-bottom: 1rem;margin-top:1rem">
@@ -217,7 +217,7 @@ export default async (props, { $f7, $onMounted, $onBeforeUnmount }) => {
       valueGauge = 20;
     }
 
-  let areaLines;
+  let areaLines2;
 
   const dates = [];
   const today = new Date();
@@ -230,8 +230,8 @@ export default async (props, { $f7, $onMounted, $onBeforeUnmount }) => {
   const tooltipDateFormat = Intl.DateTimeFormat(undefined, { month: 'long', year: 'numeric' })
   $onMounted(() => {
 
-  areaLines = $f7.areaChart.create({
-      el: '.area-chart-lines',
+  areaLines2 = $f7.areaChart.create({
+      el: '.area-chart-lines-2',
       tooltip: true,
       axis: true,
       axisLabels: dates,
@@ -262,6 +262,7 @@ export default async (props, { $f7, $onMounted, $onBeforeUnmount }) => {
         },
       ]
     });
+
 
 
 
@@ -325,7 +326,7 @@ export default async (props, { $f7, $onMounted, $onBeforeUnmount }) => {
   });
 
     $onBeforeUnmount(() => {
-      areaLines.destroy();
+      areaLines2.destroy();
     });
 
     let age = calculateAge(member.tgl_lahir);
