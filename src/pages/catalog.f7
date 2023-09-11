@@ -35,15 +35,34 @@
       <div class="area-chart area-chart-lines"></div>
       </div>
   
+      <div style="background-image:url(${member.foto})" valign="bottom" class="card-header member-img">
+        <i class="icon material-icons if-md" style="color:#60ba60;position: absolute;right: 1rem;top:1rem;">health_and_safety</i>
+      </div>
       <div class="grid grid-cols-3" style="margin-bottom: 1rem;margin-top:1rem">
       <div class="text-center">Panjang Janin <br/> <b>${member.panjang}</b></div>
       <div class="text-center">Berat Janin <br/> <b>${member.berat}</b></div>
       <div class="text-center">Perkiraan Kelahiran <br/> <b>${member.hpl} </b></div>
       </div>
       </div>
+
+      <div class="card">
+        <h5 class="text-center" style="background-color: rgb(211, 211, 211);">
+          Yay! Aku bisa mendengarmu sekarang. Aku bisa mendengar detak jantungmu, bahkan suara gemuruh di , perutmu. Jangan lupa ajak aku bicara terus ya, Bun!
+        </h5>
+      </div>
   
       <div class="card">
-        <h3>Aktifitas yang perlu dilakukan</h3>
+        <h3>Aktifitas yang Perlu Dihindari</h3>
+        <ul>
+          ${member.aktivitas_dilarang.map((a) => $h`
+          <li>${a}</li>
+          `)}
+        </ul>
+       
+      </div>
+  
+      <div class="card">
+        <h3>Aktifitas yang Bisa Dilakukan</h3>
         <ul>
           ${member.aktivitas_rekomendasi.map((a) => $h`
           <li>${a}</li>
@@ -60,7 +79,7 @@
 <script>
   async function getDetailUser(){
     try {
-      const apiUrl = 'http://localhost:5173/pasti/api/user/aktivitas/hari/123';
+      const apiUrl = 'http://localhost:5173/pasti/api/user/aktivitas/janin/123';
       const response = await fetch(apiUrl);
       // console.log(response.json());
       if (!response.ok) {
