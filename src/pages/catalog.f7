@@ -1,86 +1,178 @@
 <template>
-  <div class="page" data-name="question">
+  <div class="page" data-name="about">
     <div class="navbar">
       <div class="navbar-bg"></div>
       <div class="navbar-inner sliding">
-        <div class="title">Tanya Jawab</div>
+        <div class="left">
+          <a href="#" class="link back">
+            <i class="icon icon-back"></i>
+            <span class="if-not-md">Back</span>
+          </a>
+        </div>
+        <div class="title">Janin Tracker</div>
       </div>
     </div>
     <div class="page-content">
-      <!-- <div class="list list-strong list-dividers-ios list-outline-ios inset-md"> -->
-    <div class="list media-list list-outline-ios list-strong-ios list-dividers-ios">
+  
+        <div class="card-container">
+        ${listDate.map((a) => $h`
+          <div class="card-date ${a.today === true ? 'today' : ''}" >
+            <div class="card-day">${a.day}</div>
+            <div class="date">${a.date}</div>
+        </div>
+        `)}
+          <!-- Add more cards as needed -->
+        </div>
+  
+      <div class="">  
+      <div class="card">
+        Hi ${member.nama}
+      <div class="grid grid-cols-1" style="font-size: 1.2rem;font-weight: 500;">
+      ${ageDisplay}
+      </div>
+  
+      <div class="block block-strong-ios block-outline-android">
+      <div class="area-chart area-chart-lines"></div>
+      </div>
+  
+      <div style="background-image:url(${member.foto})" valign="bottom" class="card-header member-img">
+        <i class="icon material-icons if-md" style="color:#60ba60;position: absolute;right: 1rem;top:1rem;">health_and_safety</i>
+      </div>
+      <div class="grid grid-cols-3" style="margin-bottom: 1rem;margin-top:1rem">
+      <div class="text-center">Panjang Janin <br/> <b>${member.panjang}</b></div>
+      <div class="text-center">Berat Janin <br/> <b>${member.berat}</b></div>
+      <div class="text-center">Perkiraan Kelahiran <br/> <b>${member.hpl} </b></div>
+      </div>
+      </div>
 
+      <div class="card">
+        <h5 class="text-center" style="background-color: rgb(211, 211, 211);">
+          Yay! Aku bisa mendengarmu sekarang. Aku bisa mendengar detak jantungmu, bahkan suara gemuruh di , perutmu. Jangan lupa ajak aku bicara terus ya, Bun!
+        </h5>
+      </div>
+  
+      <div class="card">
+        <h3>Aktifitas yang Perlu Dihindari</h3>
         <ul>
-          ${pertanyaan.value.map((p) => $h`
-          <li>
-            <!-- <a class="item-content item-link" href="/product/${product.id}/">
-              <div class="item-inner">
-                <div class="item-title">${product.title}</div>
-              </div>
-            </a> -->
-            <a class="item-link item-content" href="/product/${p  .id}/">
-              <div class="item-inner">
-                <div class="item-title-row">
-                  <div class="item-title">Facebook</div>
-                  <div class="item-after">17:14</div>
-                </div>
-                <div class="item-subtitle">New messages from John Doe</div>
-                <div class="item-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut
-                  turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit
-                  amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In
-                  vel dui laoreet, commodo augue id, pulvinar lacus.</div>
-              </div>
-            </a>
-          </li>
+          ${member.aktivitas_dilarang.map((a) => $h`
+          <li>${a}</li>
           `)}
         </ul>
+       
       </div>
-      ${products.value.length === 3 && $h`
-      <div class="block">
-        <button class="button button-fill" @click=${addProduct}>Add Product xxxxxx</Button>
+  
+      <div class="card">
+        <h3>Aktifitas yang Bisa Dilakukan</h3>
+        <ul>
+          ${member.aktivitas_rekomendasi.map((a) => $h`
+          <li>${a}</li>
+          `)}
+        </ul>
+       
       </div>
-      `}
+    </div>
+  
+  
     </div>
   </div>
 </template>
 <script>
-    async function getPertanyaan(){
+  async function getDetailUser(){
     try {
-      const apiUrl = 'http://cius.co.id/pasti/api/pertanyaan';
-      const requestOptions = {
-        method: 'GET', // or 'POST', 'PUT', 'DELETE', etc. depending on your API request
-        headers: {
-          'Authorization': `Bearer ` +  localStorage.getItem('token'),
-          'Content-Type': 'application/json', // Adjust the content type as needed
-        },
-        // Add any other options as needed (e.g., body for POST requests)
-      };
+      const apiUrl = 'http://localhost:5173/pasti/api/user/aktivitas/janin/123';
       const response = await fetch(apiUrl);
+      // console.log(response.json());
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const data = await response.json();      
-      return data.data.pertanyaan;
+      return data.data;
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   }
 
-  export default async (props, { $store })  =>  {
-    // const products = $store.getters.products;
-    let pertanyaan = await getPertanyaan();
-    console.log(pertanyaan);
-    
+  function calculateAge(dateOfBirth) {
+      // Parse the date of birth string into a Date object
+      let dob = new Date(dateOfBirth);
 
-    const addProduct = () => {
-      $store.dispatch('addProduct', {
-        id: '4',
-        title: 'Apple iPhone 12',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nisi tempora similique reiciendis, error nesciunt vero, blanditiis pariatur dolor, minima sed sapiente rerum, dolorem corrupti hic modi praesentium unde saepe perspiciatis.'
-      });
+      // Get the current date
+      let currentDate = new Date();
+
+      // Calculate the difference in years, months, and days
+      let yearsDiff = currentDate.getFullYear() - dob.getFullYear();
+      let monthsDiff = currentDate.getMonth() - dob.getMonth();
+      let daysDiff = currentDate.getDate() - dob.getDate();
+
+      // Adjust for negative monthsDiff or daysDiff
+      if (daysDiff < 0) {
+          monthsDiff--;
+          let lastDayOfMonth = new Date(
+              currentDate.getFullYear(),
+              currentDate.getMonth(),
+              0
+          ).getDate();
+          daysDiff += lastDayOfMonth;
+      }
+
+      if (monthsDiff < 0) {
+          yearsDiff--;
+          monthsDiff += 12;
+      }
+
+      return {
+          years: yearsDiff,
+          months: monthsDiff,
+          days: daysDiff,
+      };
+  }
+
+  function formatDate(date,today) {
+      // Set the locale to Indonesian
+      moment.locale('id');
+
+      // Format the date with Moment.js
+
+      return {"day":moment(date).format('ddd'),"date":moment(date).format('DD'),'today':today};
+  }
+
+  
+
+
+  export default async (props, { $f7, $onMounted, $onBeforeUnmount }) => {
+
+    let member = await getDetailUser();
+    console.log(member);
+
+    const dates = [];
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth();
+    for (let i = 0; i < 4; i += 1) {
+      dates.push(new Date(year, month - (3 - i)))
     }
 
+
+
+
+      let age = calculateAge(member.tgl_lahir);
+      let ageDisplay = `${age.years} tahun, ${age.months} bulan, ${age.days} hari`;
+
+      // list date
+      let listDate = [];
+      const now = new Date();
+      for (let i = -2; i <= 2; i++) {
+          const day = moment(today).add(i, 'days');
+          if (day.isSame(moment(), 'day')) {
+            listDate.push(formatDate(day,true));
+          }else{
+            listDate.push(formatDate(day,false));
+          }
+      };
+    
+  
+
     return $render;
-  }
+  };
 
 </script>
