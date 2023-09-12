@@ -10,9 +10,13 @@
   overflow-x: hidden;
 }
 
-body .block{
-  color:#8C8A8A!important;
+body{
   font-family: 'Work Sans', sans-serif!important;
+}
+
+body .block{
+  /* color:#8C8A8A!important; */
+
   /* background-color: #FAFAFA; */
 }
 
@@ -172,4 +176,20 @@ body .block{
 /* customize dialog */
 .dialog-title{
   font-size: 1rem;
+}
+
+/* customize chip */
+.chip{
+  margin-left: 5px;
+}
+.chip:first-child{
+  margin-left: 0px!important;
+}
+
+.text-green{
+  color:green
+}
+
+.text-red{
+  color:red;
 }

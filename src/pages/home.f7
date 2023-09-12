@@ -17,9 +17,8 @@
       <div class="card demo-card-header-pic">
         <div style="background-image:url(${member.foto})" valign="bottom" class="card-header member-img">
           <span>${member.nama}</span>
-          <a data-tooltip="Terlindungi BPJS Kesehatan">
-            <i  class="icon material-icons if-md" style="color:#60ba60;position: absolute;right: 1rem;top:1rem;">
-              health_and_safety</i>
+          <a data-tooltip="Terlindungi BPJS Kesehatan" class="tooltip-init">
+              <i class="f7-icons"  style="color:#60ba60;position: absolute;right: 1rem;top:1rem;">checkmark_shield_fill</i>
           </a>
         </div>
         <div class="card-content card-content-padding">
@@ -28,9 +27,9 @@
           </div>
           
           <div class="grid grid-cols-3">
-            <div class="text-left">Tinggi <br/> <b>${member.tinggi} cm</b></div>
-            <div class="text-left">Berat Badan <br/> <b>${member.berat} kg</b></div>
-            <div class="text-left">Usia <br/> <b>${calculateAge(member.tgl_lahir).years === 0 ? calculateAge(member.tgl_lahir).months + ' bulan' : calculateAge(member.tgl_lahir).years + ' tahun'} </b></div>
+            <div class="text-left">Tinggi <br/> <span style="font-weight: 500;">${member.tinggi} cm</span></div>
+            <div class="text-left">Berat Badan <br/> <span style="font-weight: 500;">${member.berat} kg</span></div>
+            <div class="text-left">Usia <br/> <span style="font-weight: 500;">${calculateAge(member.tgl_lahir).years === 0 ? calculateAge(member.tgl_lahir).months + ' bulan' : calculateAge(member.tgl_lahir).years + ' tahun'} </span></div>
           </div>
         </div>
       </div>
@@ -103,8 +102,12 @@
 }
 
 
-export default  async  function(props, {$onMounted, $store}){   
+export default  async  function(props, {$f7,$onMounted, $store}){   
   let families = await getUsers();
+
+  var tooltip = $f7.tooltip.get('.bpjs-link');
+    // change tooltip text
+    // tooltip.setText('Profile');
   return $render;
 }
 </script>

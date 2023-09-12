@@ -44,7 +44,7 @@
             <i class="icon material-icons if-md">family_restroom</i>
             <span class="tabbar-label">Pantau</span>
           </a>
-          <a href="#view-question" class="tab-link">
+          <a href="#view-diskusi" class="tab-link">
             <i class="icon material-icons if-md">contact_support</i>
             <span class="tabbar-label">Tanya Jawab</span>
           </a>
@@ -66,7 +66,7 @@
       </div>
 
       <!-- Catalog View -->
-      <div id="view-question" class="view view-init tab" data-name="catalog" data-url="/question/">
+      <div id="view-diskusi" class="view view-init tab" data-name="diskusi" data-url="/diskusi/">
         <!-- Catalog page will be loaded here dynamically from /catalog/ route -->
       </div>
 

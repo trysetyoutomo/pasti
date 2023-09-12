@@ -6,6 +6,8 @@ import TimbanganPage from '../pages/timbangan.f7';
 import CatalogPage from '../pages/catalog.f7';
 import ProductPage from '../pages/product.f7';
 import SettingsPage from '../pages/settings.f7';
+import Diskusi from '../pages/diskusi.f7';
+import DiskusiDetail from '../pages/diskusidetail.f7';
 
 import DynamicRoutePage from '../pages/dynamic-route.f7';
 import RequestAndLoad from '../pages/request-and-load.f7';
@@ -32,8 +34,12 @@ var routes = [
     component: Balita,
   },
   {
-    path: '/form/',
-    component: FormPage,
+    path: '/diskusi/',
+    component: Diskusi,
+  },
+  {
+    path: '/diskusi/:id',
+    component: DiskusiDetail,
   },
   {
     path: '/question/',

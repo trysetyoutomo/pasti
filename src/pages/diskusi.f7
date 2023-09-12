@@ -1,0 +1,69 @@
+<template>
+    <div class="page" data-name="settings">
+      <div class="navbar">
+        <div class="navbar-bg"></div>
+        <div class="navbar-inner sliding">
+          <div class="title">Tanya Jawab</div>
+        </div>
+      </div>
+      <div class="page-content">
+        <div class="">
+            <div class="list media-list list-outline-ios list-strong-ios list-dividers-ios">
+                <ul>
+                ${pertanyaan.map((data) => $h`
+                  <li class="card">
+                    <a class="item-link item-content" href="/diskusi/${data.uid}">
+                      <div class="item-inner">
+                        <div class="item-title-row">
+                          <div class="item-title">${data.judul}</div>
+                          <div class="item-after">${moment(data.tgl_pertanyaan).fromNow()}</div>
+                        </div>
+                        <div class="item-text">${data.pertanyaan}</div>
+                          <div class="item-subtitle" style="margin-top:1rem">
+                            ${data.tag.map((t) => $h`
+                                <div class="chip color-red"><div class="chip-label">${t}</div></div>
+                            `)}
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                  `)}
+                </ul>
+              </div>
+
+        </div>
+      </div>
+    </div>
+    </template>
+<script>
+    async function getPertanyaan(){
+    if (localStorage.getItem('token') !== null){
+    try {
+        const apiUrl = 'https://academy.valuestream.id/android/api/pertanyaan';
+        const requestOptions = {
+          method: 'GET', // or 'POST', 'PUT', 'DELETE', etc. depending on your API request
+          headers: {
+            'Authorization': `Bearer ` +  localStorage.getItem('token'),
+            'Content-Type': 'application/json', // Adjust the content type as needed
+          },
+          // Add any other options as needed (e.g., body for POST requests)
+        };
+        const response = await fetch(apiUrl, requestOptions);
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();      
+        return data.data.pertanyaan;
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+    }
+
+
+    export default  async  function(props, {$onMounted, $store}){   
+       
+        let pertanyaan = await getPertanyaan();
+        return $render;
+    }
+</script>

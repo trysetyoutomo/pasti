@@ -46,6 +46,7 @@ var app = new Framework7({
   on: {
     init: function () {
       var f7 = this;
+      moment.locale('id');
       if (f7.device.cordova) {
         // Init cordova APIs (see cordova-app.js)
         cordovaApp.init(f7);
