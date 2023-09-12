@@ -128,10 +128,13 @@
   </div>
 </template>
 <script>
-  export default (props, { $f7, $update }) => {
+ 
+  export default (props, { $f7, $update, $store }) => {
     // Login screen demo data
     let username = '';
     let password = '';
+    
+    // alert($store.getters.API_ENDPOINT);
 
     const updateUsername = (e) => {
       username = e.target.value;
@@ -158,7 +161,7 @@
 
       let config = {
         method: 'post',
-        url: 'http://cius.co.id/pasti/login',
+        url: 'https://academy.valuestream.id/android/pasti/login',
         headers: { 
           'Content-Type': 'application/json'
         },

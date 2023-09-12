@@ -10,6 +10,21 @@
         </a>
       </div>
       <div class="title">Balita Tracker</div>
+      <div class="right">
+        <a class="link popover-open" data-popover=".popover-menu">
+          <i class="f7-icons">ellipsis_vertical</i>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="popover popover-menu">
+    <div class="popover-angle"></div>
+    <div class="popover-inner">
+      <div class="list">
+        <ul>
+          <li><a href="/timbangan/" class="list-button popover-close">Masukan Timbangan Terbaru</a></li>
+        </ul>
+      </div>
     </div>
   </div>
   <div class="page-content">
@@ -27,19 +42,19 @@
     <div class="">  
     <div class="card">
       Hi ${member.nama}
-    <div class="grid grid-cols-1" style="font-size: 1.2rem;font-weight: 500;">
+    <div class="grid grid-cols-1" style="font-size: 1.2rem;font-weight: 500;margin-bottom: 2rem;">
     ${ageDisplay}
     </div>
 
     <div class="block block-strong-ios block-outline-android">
-    <div class="area-chart area-chart-lines-2"></div>
+    <div class="area-chart area-chart-lines-2" ></div>
     </div>
 
     <div class="grid grid-cols-3" style="margin-bottom: 1rem;margin-top:1rem">
-    <div class="text-center">Tinggi <br/> <b>${member.tinggi}</b></div>
-    <div class="text-center">Berat Badan <br/> <b>${member.berat}</b></div>
-    <div class="text-center">Usia <br/> <b>${member.tinggi} </b></div>
-    </div>
+    <div class="text-center">Tinggi <br/> <b>${member.tinggi} cm</b></div>
+    <div class="text-center">Berat Badan <br/> <b>${berat} kg</b></div>
+    <div class="text-center">Usia <br/> <b>${calculateAge(member.tgl_lahir).years === 0 ? calculateAge(member.tgl_lahir).months + ' bulan' : calculateAge(member.tgl_lahir).years + ' tahun'} </b></div>
+  </div>
     </div>
     <div class="card">
     <h3>Stunting Meter</h3>
@@ -65,7 +80,7 @@
 <script>
 async function getDetailUser(){
   try {
-    const apiUrl = 'http://cius.co.id/pasti/api/user/aktivitas';
+    const apiUrl = 'https://academy.valuestream.id/android/api/user/aktivitas';
     const response = await fetch(apiUrl);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -88,6 +103,7 @@ function calculateAge(dateOfBirth) {
     let yearsDiff = currentDate.getFullYear() - dob.getFullYear();
     let monthsDiff = currentDate.getMonth() - dob.getMonth();
     let daysDiff = currentDate.getDate() - dob.getDate();
+    let weeksDiff = Math.floor((currentDate - dob) / (7 * 24 * 60 * 60 * 1000));
 
     // Adjust for negative monthsDiff or daysDiff
     if (daysDiff < 0) {
@@ -109,6 +125,7 @@ function calculateAge(dateOfBirth) {
         years: yearsDiff,
         months: monthsDiff,
         days: daysDiff,
+        weeks: weeksDiff
     };
 }
 
@@ -200,10 +217,36 @@ function formatDate(date,today) {
     }
 }
 
+function sortByDateAscending(jsonArray, dateField) {
+  jsonArray.sort(function (a, b) {
+    const dateA = new Date(a[dateField]);
+    const dateB = new Date(b[dateField]);
+    return dateA - dateB;
+  });
+
+  return jsonArray;
+}
 
 export default async (props, { $f7, $onMounted, $onBeforeUnmount }) => {
-
+  // let dates = [];
   let member = await getDetailUser();
+
+  let berat_history = sortByDateAscending(member.berat_history,"tgl_timbang");
+  
+  let dates  = berat_history.map((a)=>{
+    // return moment(a.tgl_timbang).format("DD MMM");
+    return new Date(a.tgl_timbang);
+  });
+  
+
+  berat_history = berat_history.map((a)=>{
+    return a.berat
+  });
+
+  let berat = berat_history[berat_history.length - 1];
+
+  
+
   // alert(member.tgl_lahir + " " +  member.berat + " "+ member.tinggi);
   let growthStatus =  detectGrowthStatus(member.tgl_lahir, member.berat, member.tinggi);
   // alert(growthStatus);
@@ -219,13 +262,13 @@ export default async (props, { $f7, $onMounted, $onBeforeUnmount }) => {
 
   let areaLines2;
 
-  const dates = [];
   const today = new Date();
   const year = today.getFullYear();
   const month = today.getMonth();
   for (let i = 0; i < 4; i += 1) {
     dates.push(new Date(year, month - (3 - i)))
   }
+  console.log(dates);
   const axisDateFormat = Intl.DateTimeFormat(undefined, { month: 'short', year: 'numeric' })
   const tooltipDateFormat = Intl.DateTimeFormat(undefined, { month: 'long', year: 'numeric' })
   $onMounted(() => {
@@ -239,7 +282,8 @@ export default async (props, { $f7, $onMounted, $onBeforeUnmount }) => {
       toggleDatasets: true,
       lineChart: true,
       formatAxisLabel(date) {
-        return axisDateFormat.format(date);
+        // return axisDateFormat.format(date);
+        return moment(date).format("MMM");
       },
       formatTooltipAxisLabel(date) {
         return tooltipDateFormat.format(date);
@@ -258,7 +302,7 @@ export default async (props, { $f7, $onMounted, $onBeforeUnmount }) => {
         {
           label: 'Berat Badan (kg)',
           color: '#E91E63',
-          values: [3.5, 4.0, 5.1, 4.0]
+          values: berat_history
         },
       ]
     });
@@ -335,7 +379,7 @@ export default async (props, { $f7, $onMounted, $onBeforeUnmount }) => {
     // list date
     let listDate = [];
     const now = new Date();
-    for (let i = -2; i <= 2; i++) {
+    for (let i = -2; i <= 3; i++) {
         const day = moment(today).add(i, 'days');
         if (day.isSame(moment(), 'day')) {
           listDate.push(formatDate(day,true));

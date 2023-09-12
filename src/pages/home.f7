@@ -12,14 +12,15 @@
 
     <!-- Scrollable page content-->
     <div class="page-content">
-
-
       ${families.map((member) => $h`
       <a href="/balita/">
       <div class="card demo-card-header-pic">
         <div style="background-image:url(${member.foto})" valign="bottom" class="card-header member-img">
           <span>${member.nama}</span>
-          <i class="icon material-icons if-md" style="color:#60ba60;position: absolute;right: 1rem;top:1rem;">health_and_safety</i>
+          <a data-tooltip="Terlindungi BPJS Kesehatan">
+            <i  class="icon material-icons if-md" style="color:#60ba60;position: absolute;right: 1rem;top:1rem;">
+              health_and_safety</i>
+          </a>
         </div>
         <div class="card-content card-content-padding">
           <div class="grid grid-cols" style="margin-bottom: 1rem;">
@@ -27,9 +28,9 @@
           </div>
           
           <div class="grid grid-cols-3">
-            <div class="text-left">Tinggi <br/> <b>${member.tinggi}</b></div>
-            <div class="text-left">Berat Badan <br/> <b>${member.berat}</b></div>
-            <div class="text-left">Usia <br/> <b>${member.tinggi} </b></div>
+            <div class="text-left">Tinggi <br/> <b>${member.tinggi} cm</b></div>
+            <div class="text-left">Berat Badan <br/> <b>${member.berat} kg</b></div>
+            <div class="text-left">Usia <br/> <b>${calculateAge(member.tgl_lahir).years === 0 ? calculateAge(member.tgl_lahir).months + ' bulan' : calculateAge(member.tgl_lahir).years + ' tahun'} </b></div>
           </div>
         </div>
       </div>
@@ -114,7 +115,7 @@
   import moment from 'moment';  
   async function getUsers(){
     try {
-      const apiUrl = 'http://cius.co.id/pasti/api/user/1';
+      const apiUrl = 'https://academy.valuestream.id/android/pasti/api/user/1';
       const requestOptions = {
         method: 'GET', // or 'POST', 'PUT', 'DELETE', etc. depending on your API request
         headers: {
@@ -123,7 +124,7 @@
         },
         // Add any other options as needed (e.g., body for POST requests)
       };
-      const response = await fetch(apiUrl);
+      const response = await fetch(apiUrl, requestOptions);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -134,9 +135,46 @@
     }
   }
 
-export default  async  function(props, {$onMounted}){   
+  function calculateAge(dateOfBirth) {
+    // Parse the date of birth string into a Date object
+    let dob = new Date(dateOfBirth);
+
+    // Get the current date
+    let currentDate = new Date();
+
+    // Calculate the difference in years, months, and days
+    let yearsDiff = currentDate.getFullYear() - dob.getFullYear();
+    let monthsDiff = currentDate.getMonth() - dob.getMonth();
+    let daysDiff = currentDate.getDate() - dob.getDate();
+    let weeksDiff = Math.floor((currentDate - dob) / (7 * 24 * 60 * 60 * 1000));
+
+    // Adjust for negative monthsDiff or daysDiff
+    if (daysDiff < 0) {
+        monthsDiff--;
+        let lastDayOfMonth = new Date(
+            currentDate.getFullYear(),
+            currentDate.getMonth(),
+            0
+        ).getDate();
+        daysDiff += lastDayOfMonth;
+    }
+
+    if (monthsDiff < 0) {
+        yearsDiff--;
+        monthsDiff += 12;
+    }
+
+    return {
+        years: yearsDiff,
+        months: monthsDiff,
+        days: daysDiff,
+        weeks: weeksDiff
+    };
+}
+
+
+export default  async  function(props, {$onMounted, $store}){   
   let families = await getUsers();
-  console.log(families);
   return $render;
 }
 </script>

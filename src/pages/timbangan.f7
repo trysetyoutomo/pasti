@@ -1,0 +1,119 @@
+<template>
+<div class="page" data-name="form">
+  <div class="navbar">
+    <div class="navbar-bg"></div>
+    <div class="navbar-inner sliding">
+      <div class="left">
+        <a href="#" class="link back">
+          <i class="icon icon-back"></i>
+          <span class="if-not-md">Back</span>
+        </a>
+      </div>
+      <div class="title">Berat Badan </div>
+    </div>
+  </div>
+  <div class="page-content">
+    <form id="form">
+    <div class="list list-strong-ios list-dividers-ios list-outline-ios">
+      <ul>
+        <li>
+          <div class="item-content item-input">
+            <div class="item-inner">
+              <div class="item-title item-label">Tanggal Timbang</div>
+              <div class="item-input-wrap">
+                <input type="date" placeholder="Tanggal Timbang" name="tgl_timbang" value="" />
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="item-content item-input">
+            <div class="item-inner">
+              <div class="item-title item-label">Berat Badan (kg)</div>
+              <div class="item-input-wrap">
+                <input type="number" placeholder="Berat Badan" name="berat_badan" />
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="item-content item-input">
+            <div class="item-inner">
+              <div class="item-title item-label">Tinggi Badan (cm)</div>
+              <div class="item-input-wrap">
+                <input type="number" placeholder="Berat Badan" name="tinggi_badan" />
+              </div>
+            </div>
+          </div>
+        </li>
+
+   
+        <li class="align-top">
+          <div class="item-content item-input">
+            <div class="item-inner">
+              <div class="item-title item-label">Keterangan</div>
+              <div class="item-input-wrap">
+                <textarea placeholder="Keterangan" name="keterangan"></textarea>
+              </div>
+            </div>
+          </div>
+        </li>
+   
+        <li class="align-top">
+          <div class="item-content ">
+            <div class="item-inner">
+                <button id="submit-button" type="button" href="#" class="button button-fill" style="background-color: #E91E63;">Simpan</button>
+            </div>
+          </div>
+        </li>
+   
+      </ul>
+    </div>
+  </form>
+  </div>
+</div>
+</template>
+<script>
+  export default (props, { $, $on, $f7 }) => {
+    $on('pageInit', () => { 
+      document.getElementsByName("tgl_timbang")[0].value = moment().format("YYYY-MM-DD");
+      $('.convert-form-to-data').on('click', function () {
+        var formData = $f7.form.convertToData('#form');
+      });
+
+      $('#submit-button').on('click', function () {
+        var formData = $f7.form.convertToData('#form');
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+          "tgl_timbang": formData.tgl_timbang,
+          "berat_badan": formData.berat_badan,
+          "tinggi_badan": formData.tinggi_badan,
+          "keterangan": formData.keterangan
+        });
+
+        var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: raw,
+          redirect: 'follow'
+        };
+        $f7.preloader.show();
+        fetch("https://academy.valuestream.id/android/api/keluarga/1/berat", requestOptions)
+        .then(function(response){
+          if (response.status === 200){
+            
+            $f7.preloader.hide();
+            setTimeout(() => {
+              $f7.views.main.router.navigate('/')
+            }, 100);
+          }
+        })
+        .catch(error => console.log('error', error));
+        });
+        });
+
+        return $render;
+  }
+</script>

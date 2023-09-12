@@ -2,6 +2,7 @@
 import HomePage from '../pages/home.f7';
 import AboutPage from '../pages/about.f7';
 import FormPage from '../pages/form.f7';
+import TimbanganPage from '../pages/timbangan.f7';
 import CatalogPage from '../pages/catalog.f7';
 import ProductPage from '../pages/product.f7';
 import SettingsPage from '../pages/settings.f7';
@@ -14,6 +15,10 @@ import Balita from '../pages/balita.f7';
 
 
 var routes = [
+  {
+    path: '/timbangan',
+    component: TimbanganPage,
+  },
   {
     path: '/',
     component: HomePage,
