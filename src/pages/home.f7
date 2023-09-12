@@ -36,102 +36,32 @@
       </div>
       </a>
         `)}
-
-      <!-- <div class="card demo-card-header-pic">
-        <div style="background-image:url(https://cdn.framework7.io/placeholder/people-1000x600-6.jpg)" valign="bottom" class="card-header member-img">
-          <span>Khumaira Syafira</span>
-          <i class="icon material-icons if-md" style="color:#60ba60;position: absolute;right: 1rem;top:1rem;">health_and_safety</i>
-        </div>
-        <div class="card-content card-content-padding">
-          <div class="grid grid-cols-2" style="margin-bottom: 1rem;">
-            <div class="date"><i class="icon material-icons if-md">cake</i> <span style="top:3px;position: relative;">26 Februari 2023</span></div>
-          </div>
-          
-          <div class="grid grid-cols-3">
-            <div class="text-left">Tinggi <br/> <b>100cm</b></div>
-            <div class="text-left">Berat Badan <br/> <b>50kg</b></div>
-            <div class="text-left" >Vaksin <br/> <b>12 Jan </b></div>
-          </div>
-        </div>
-      </div> -->
-
-
-      <!--
-      <div class="block">
-        <p>This is an example of tabs-layout application. The main point of such tabbed layout is that each tab contains independent view with its own routing and navigation.</p>
-
-        <p>Each tab/view may have different layout, different navbar type (dynamic, fixed or static) or without navbar like this tab.</p>
-      </div>
-      <div class="block-title">Navigation</div>
-      <div class="list list-strong inset list-dividers-ios">
-        <ul>
-          <li>
-            <a href="/about/" class="item-content item-link">
-              <div class="item-inner">
-                <div class="item-title">About</div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="/form/" class="item-content item-link">
-              <div class="item-inner">
-                <div class="item-title">Form</div>
-              </div>
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <div class="block-title">Modals</div>
-      <div class="block grid grid-cols-2 grid-gap">
-        <a href="#" class="button button-fill popup-open" data-popup="#my-popup">Popup</a>
-        <a href="#" class="button button-fill login-screen-open" data-login-screen="#my-login-screen">Login Screen</a>
-      </div>
-
-      <div class="block-title">Panels</div>
-      <div class="block grid grid-cols-2 grid-gap">
-        <a href="#" class="button button-fill panel-open" data-panel="left">Left Panel</a>
-        <a href="#" class="button button-fill panel-open" data-panel="right">Right Panel</a>
-      </div>
-
-      <div class="list list-strong inset list-dividers-ios links-list">
-        <ul>
-          <li>
-            <a href="/dynamic-route/blog/45/post/125/?foo=bar#about">Dynamic (Component) Route</a>
-          </li>
-          <li>
-            <a href="/load-something-that-doesnt-exist/">Default Route (404)</a>
-          </li>
-          <li>
-            <a href="/request-and-load/user/123456/">Request Data & Load</a>
-          </li>
-        </ul>
-      </div>
-      -->
     </div>
   </div>
 </template>
 <script>
   import moment from 'moment';  
   async function getUsers(){
+    if (localStorage.getItem('token') !== null){
     try {
-      const apiUrl = 'https://academy.valuestream.id/android/pasti/api/user/1';
-      const requestOptions = {
-        method: 'GET', // or 'POST', 'PUT', 'DELETE', etc. depending on your API request
-        headers: {
-          'Authorization': `Bearer ` +  localStorage.getItem('token'),
-          'Content-Type': 'application/json', // Adjust the content type as needed
-        },
-        // Add any other options as needed (e.g., body for POST requests)
-      };
-      const response = await fetch(apiUrl, requestOptions);
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        const apiUrl = 'https://academy.valuestream.id/android/pasti/api/user/1';
+        const requestOptions = {
+          method: 'GET', // or 'POST', 'PUT', 'DELETE', etc. depending on your API request
+          headers: {
+            'Authorization': `Bearer ` +  localStorage.getItem('token'),
+            'Content-Type': 'application/json', // Adjust the content type as needed
+          },
+          // Add any other options as needed (e.g., body for POST requests)
+        };
+        const response = await fetch(apiUrl, requestOptions);
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();      
+        return data.data.keluarga;
+      } catch (error) {
+        console.error('Error fetching data:', error);
       }
-      const data = await response.json();      
-      return data.data.keluarga;
-    } catch (error) {
-      console.error('Error fetching data:', error);
     }
   }
 

@@ -154,7 +154,7 @@
 
 
       setTimeout(function () {
-      let data = JSON.stringify({
+      let data = JSON.stringify({ // demo account
         "username": "try",
         "password": "1234"
       });
@@ -181,8 +181,9 @@
         },2000);
         setTimeout(function(){
         document.querySelector(".dialog-title").textContent = "Mengalihkan ..";
-        $f7.loginScreen.close();
         $f7.dialog.close();
+        $f7.loginScreen.close();
+        $f7.views.main.router.navigate('/')
         },3000);
        
       })
