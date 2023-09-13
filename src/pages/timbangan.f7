@@ -105,9 +105,11 @@
           if (response.status === 200){
             
             $f7.preloader.hide();
-            setTimeout(() => {
-              $f7.views.main.router.navigate('/')
-            }, 100);
+            reloadCurrentPage();
+
+            // setTimeout(() => {
+            //   $f7.views.main.router.navigate('/')
+            // }, 100);
           }
         })
         .catch(error => console.log('error', error));
