@@ -48,7 +48,7 @@
             <i class="icon material-icons if-md">contact_support</i>
             <span class="tabbar-label">Tanya Jawab</span>
           </a>
-          <a href="#view-settings" class="tab-link">
+          <a href="#view-alarm" class="tab-link">
             <i class="icon f7-icons if-not-md">gear</i>
             <i class="icon material-icons if-md">notifications_active</i>
             <span class="tabbar-label">Alarm</span>
@@ -68,6 +68,11 @@
       <!-- Catalog View -->
       <div id="view-catalog" class="view view-init tab" data-name="catalog" data-url="/catalog/">
         <!-- Catalog page will be loaded here dynamically from /catalog/ route -->
+      </div>
+
+      <!-- Alarm View -->
+      <div id="view-alarm" class="view view-init tab" data-name="alarm" data-url="/alarm/">
+        <!-- Settings page will be loaded here dynamically from /settings/ route -->
       </div>
 
       <!-- Settings View -->
