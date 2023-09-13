@@ -44,7 +44,7 @@
             <i class="icon material-icons if-md">family_restroom</i>
             <span class="tabbar-label">Pantau</span>
           </a>
-          <a href="#view-catalog" class="tab-link">
+          <a href="#view-diskusi" class="tab-link">
             <i class="icon material-icons if-md">contact_support</i>
             <span class="tabbar-label">Tanya Jawab</span>
           </a>
@@ -66,7 +66,7 @@
       </div>
 
       <!-- Catalog View -->
-      <div id="view-catalog" class="view view-init tab" data-name="catalog" data-url="/catalog/">
+      <div id="view-diskusi" class="view view-init tab" data-name="diskusi" data-url="/diskusi/">
         <!-- Catalog page will be loaded here dynamically from /catalog/ route -->
       </div>
 
@@ -109,37 +109,21 @@
       <div class="view">
         <div class="page">
           <div class="page-content login-screen-content">
-            <div class="login-screen-title">Login</div>
-            <div class="list">
-              <ul>
-                <li class="item-content item-input">
-                  <div class="item-inner">
-                    <div class="item-title item-label">Username</div>
-                    <div class="item-input-wrap">
-                      <input type="text" name="username" placeholder="Your username" value="${username}" @input="${updateUsername}"/>
-
-                    </div>
-                  </div>
-                </li>
-                <li class="item-content item-input">
-                  <div class="item-inner">
-                    <div class="item-title item-label">Password</div>
-                    <div class="item-input-wrap">
-                      <input type="password" name="password" placeholder="Your password" value="${password}" @input="${updatePassword}"/>
-
-                    </div>
-                  </div>
-                </li>
-              </ul>
+            <div class="login-screen-title">
+              <img src="../assets/logo.png" width="100" alt="logo" />
             </div>
-            <div class="list">
+            <div class="block-footer">
+              <h3>Selamat datang di Aplikasi Pasti</h3>
+              <p>Mari menjadi bagian terwujudnya 0% anak stunting di indonesia!</p>
+
+            </div>
+            <div class="list block">
               <ul>
                 <li>
-                  <a href="#" class="item-link list-button login-button" @click="${alertLoginData}">Sign In</a>
-
+                  <a href="#" class="item-link list-button login-button button button-outline" @click="${login}"><img src="https://play-lh.googleusercontent.com/FkmcR7in7-N8YvIZYBsYXQIvSGz6dBULJ9SlhvKsZC1NB21VFjX7zAXk_MI95daplQ" alt="logo" width="20" style="position: relative;top:5px" /> Masuk dengan Mobile JKN</a>
                 </li>
               </ul>
-              <div class="block-footer">Some text about login information.<br/>Click "Sign In" to close Login Screen</div>
+              <div style="margin-top:2rem;" class="block-footer">Untuk melanjutkan Aplikasi Pasti.<br/>Silahkan login menggunakan Mobile JKN</div>
             </div>
           </div>
         </div>
@@ -149,10 +133,13 @@
   </div>
 </template>
 <script>
-  export default (props, { $f7, $update }) => {
+ 
+  export default (props, { $f7, $update, $store }) => {
     // Login screen demo data
     let username = '';
     let password = '';
+    
+    // alert($store.getters.API_ENDPOINT);
 
     const updateUsername = (e) => {
       username = e.target.value;
@@ -162,10 +149,60 @@
       password = e.target.value;
       $update();
     }
-    const alertLoginData = () => {
-      $f7.dialog.alert('Username: ' + username + '<br/>Password: ' + password, () => {
-        $f7.loginScreen.close();
+    const login = () => {
+      
+
+      $f7.dialog.preloader('Demo login menggunakan Mobile JKN .. ');
+      setTimeout(function(){
+        document.querySelector(".dialog-title").textContent = "Login ..";
+      },1000);
+
+
+      setTimeout(function () {
+      let data = JSON.stringify({ // demo account
+        "username": "try",
+        "password": "1234"
       });
+
+      let config = {
+        method: 'post',
+        url: 'https://academy.valuestream.id/android/pasti/login',
+        headers: { 
+          'Content-Type': 'application/json'
+        },
+        data : data
+      };
+
+      axios.request(config)
+      .then((response) => {
+        if (response.data.token !== undefined)
+          localStorage.setItem("token",response.data.token);
+     
+        setTimeout(function(){
+        document.querySelector(".dialog-title").textContent = "Login Berhasil!";
+        },1000);
+        setTimeout(function(){
+        document.querySelector(".dialog-title").textContent = "Mendapatkan informasi data keluarga ..";
+        },2000);
+        setTimeout(function(){
+        document.querySelector(".dialog-title").textContent = "Mengalihkan ..";
+        $f7.dialog.close();
+        $f7.loginScreen.close();
+        $f7.views.main.router.navigate('/')
+        },3000);
+       
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+      }, 5000);
+
+
+
+
+      // $f7.dialog.alert('Username: ' + username + '<br/>Password: ' + password, () => {
+        // $f7.loginScreen.close();
+      // });
     }
 
     return $render;

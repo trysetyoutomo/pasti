@@ -9,7 +9,22 @@
           <span class="if-not-md">Back</span>
         </a>
       </div>
-      <div class="title">Balita Tracker</div>
+      <div class="title">Tracker</div>
+      <div class="right">
+        <a class="link popover-open" data-popover=".popover-menu">
+          <i class="f7-icons">ellipsis_vertical</i>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="popover popover-menu">
+    <div class="popover-angle"></div>
+    <div class="popover-inner">
+      <div class="list">
+        <ul>
+          <li><a href="/timbangan/" class="list-button popover-close">Masukan Timbangan Terbaru</a></li>
+        </ul>
+      </div>
     </div>
   </div>
   <div class="page-content">
@@ -27,25 +42,37 @@
     <div class="">  
     <div class="card">
       Hi ${member.nama}
-    <div class="grid grid-cols-1" style="font-size: 1.2rem;font-weight: 500;">
+    <div class="grid grid-cols-1" style="font-size: 1.2rem;font-weight: 500;margin-bottom: 2rem;">
     ${ageDisplay}
     </div>
 
     <div class="block block-strong-ios block-outline-android">
-    <div class="area-chart area-chart-lines"></div>
+    <div class="area-chart area-chart-lines-2" ></div>
     </div>
 
     <div class="grid grid-cols-3" style="margin-bottom: 1rem;margin-top:1rem">
-    <div class="text-center">Tinggi <br/> <b>${member.tinggi}</b></div>
-    <div class="text-center">Berat Badan <br/> <b>${member.berat}</b></div>
-    <div class="text-center">Usia <br/> <b>${member.tinggi} </b></div>
-    </div>
+    <div class="text-center">Tinggi <br/> <b>${member.tinggi} cm</b></div>
+    <div class="text-center">Berat Badan <br/> <b>${berat} kg</b></div>
+    <div class="text-center">Usia <br/> <b>${calculateAge(member.tgl_lahir).years === 0 ? calculateAge(member.tgl_lahir).months + ' bulan' : calculateAge(member.tgl_lahir).years + ' tahun'} </b></div>
+  </div>
     </div>
     <div class="card">
     <h3>Stunting Meter</h3>
 		<div id='myChart' style="overflow: visible!important;"></div>
     <h4 style="text-align: center;color:${growthStatusColor};position: relative;bottom:4rem">${growthStatus}</h4>
-    </div>
+    
+
+
+    ${growthStatus === 'Perkembangan rendah' ? $h`
+    <a href="https://www.nestlehealthscience.co.id/artikel/susu-untuk-naik-berat-badan-anak" style="position: relative;bottom:4rem" class="button button-outline external">
+      Lihat Artikel Rekomendasi</a>
+    <a @click=${bookingDokter}  style="position: relative;bottom:3rem" class="button button-outline external"><img src="https://play-lh.googleusercontent.com/FkmcR7in7-N8YvIZYBsYXQIvSGz6dBULJ9SlhvKsZC1NB21VFjX7zAXk_MI95daplQ" alt="logo" width="20" style="position: relative;top:2px;right: 6px;" /> Buat janji dengan Dokter Anak</a>
+   
+    ` : $h`
+      <p style="font-style: italic;position: relative;bottom:3rem">Hebat! Pertumbuhan anak adalah perjalanan yang penuh kebahagiaan dan tantangan. Nikmati setiap momen bersama mereka, terus jaga tumbuh kembang anak dengan baik!.</p>
+    `}
+
+  </div>
 
     <div class="card">
       <h3>Aktifitas yang perlu dilakukan</h3>
@@ -65,13 +92,13 @@
 <script>
 async function getDetailUser(){
   try {
-    const apiUrl = 'http://localhost:5173/pasti/api/user/aktivitas/hari/123';
+    const apiUrl = 'https://academy.valuestream.id/android/api/user/aktivitas';
     const response = await fetch(apiUrl);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const data = await response.json();      
-    return data.data;
+      return data.data;
   } catch (error) {
     console.error('Error fetching data:', error);
   }
@@ -88,6 +115,7 @@ function calculateAge(dateOfBirth) {
     let yearsDiff = currentDate.getFullYear() - dob.getFullYear();
     let monthsDiff = currentDate.getMonth() - dob.getMonth();
     let daysDiff = currentDate.getDate() - dob.getDate();
+    let weeksDiff = Math.floor((currentDate - dob) / (7 * 24 * 60 * 60 * 1000));
 
     // Adjust for negative monthsDiff or daysDiff
     if (daysDiff < 0) {
@@ -109,6 +137,7 @@ function calculateAge(dateOfBirth) {
         years: yearsDiff,
         months: monthsDiff,
         days: daysDiff,
+        weeks: weeksDiff
     };
 }
 
@@ -189,6 +218,13 @@ function formatDate(date,today) {
     // Mendapatkan data standar pertumbuhan untuk kelompok usia yang sesuai
     const growthData = standardGrowthData[ageGroup];
 
+    // console.log(berat + " " + tinggi);
+    // console.log(growthData);
+    // console.log(berat >= growthData.beratMin );
+    // console.log(berat <= growthData.beratMax );
+    // && berat <= growthData.beratMax &&
+    //     tinggi >= growthData.tinggiMin && tinggi <= growthData.tinggiMax
+
     // Melakukan pengecekan berat dan tinggi terhadap standar pertumbuhan yang sesuai
     if (berat >= growthData.beratMin && berat <= growthData.beratMax &&
         tinggi >= growthData.tinggiMin && tinggi <= growthData.tinggiMax) {
@@ -196,42 +232,89 @@ function formatDate(date,today) {
     } else if (berat < growthData.beratMin || tinggi < growthData.tinggiMin) {
         return "Perkembangan rendah";
     } else {
-        return "Perkembangan sedang";
+        return "Perkembangan tinggi";
     }
 }
 
+function sortByDateAscending(jsonArray, dateField) {
+  jsonArray.sort(function (a, b) {
+    const dateA = new Date(a[dateField]);
+    const dateB = new Date(b[dateField]);
+    return dateA - dateB;
+  });
+
+  return jsonArray;
+}
 
 export default async (props, { $f7, $onMounted, $onBeforeUnmount }) => {
 
+  const bookingDokter = () => {
+    $f7.dialog.preloader('Demo booking menggunakan Mobile JKN .. ');
+    setTimeout(function(){
+        document.querySelector(".dialog-title").textContent = "Menghubungi Mobile JKN ..";
+    },1000);
+
+    setTimeout(function(){
+        document.querySelector(".dialog-title").textContent = "Booking jadwal faskes tingkat 1 .. ";
+    },2000);
+
+    setTimeout(function(){
+        document.querySelector(".dialog-title").textContent = "Booking Berhasil, silahkan periksa Aplikasi Mobile JKN";
+    },4000);
+    setTimeout(function(){
+        $f7.dialog.close();
+    },6000);
+
+  }
+  // let dates = [];
   let member = await getDetailUser();
+
+  let berat_history = sortByDateAscending(member.berat_history,"tgl_timbang");
+  
+  let dates  = berat_history.map((a)=>{
+    // return moment(a.tgl_timbang).format("DD MMM");
+    return new Date(a.tgl_timbang);
+  });
+  
+
+  berat_history = berat_history.map((a)=>{
+    return a.berat
+  });
+
+  let berat = berat_history[berat_history.length - 1];
+
   // alert(member.tgl_lahir + " " +  member.berat + " "+ member.tinggi);
-  let growthStatus =  detectGrowthStatus(member.tgl_lahir, member.berat, member.tinggi);
+  let growthStatus =  detectGrowthStatus(member.tgl_lahir, berat, member.tinggi);
   // alert(growthStatus);
   let valueGauge;
 
   let growthStatusColor = "red";
-    if (growthStatus === "Perkembangan normal"){
+    if (growthStatus === "Perkembangan tinggi"){
       valueGauge = 100;
+      growthStatusColor = "blue";
+    }else if (growthStatus === "Perkembangan normal"){
+      valueGauge = 70;
       growthStatusColor = "green";
-    }else{
+    }
+    else{
       valueGauge = 20;
     }
 
-  let areaLines;
+  let areaLines2;
 
-  const dates = [];
   const today = new Date();
   const year = today.getFullYear();
   const month = today.getMonth();
   for (let i = 0; i < 4; i += 1) {
     dates.push(new Date(year, month - (3 - i)))
   }
+  console.log(dates);
   const axisDateFormat = Intl.DateTimeFormat(undefined, { month: 'short', year: 'numeric' })
   const tooltipDateFormat = Intl.DateTimeFormat(undefined, { month: 'long', year: 'numeric' })
   $onMounted(() => {
 
-  areaLines = $f7.areaChart.create({
-      el: '.area-chart-lines',
+  areaLines2 = $f7.areaChart.create({
+      el: '.area-chart-lines-2',
       tooltip: true,
       axis: true,
       axisLabels: dates,
@@ -239,7 +322,8 @@ export default async (props, { $f7, $onMounted, $onBeforeUnmount }) => {
       toggleDatasets: true,
       lineChart: true,
       formatAxisLabel(date) {
-        return axisDateFormat.format(date);
+        // return axisDateFormat.format(date);
+        return moment(date).format("MMM");
       },
       formatTooltipAxisLabel(date) {
         return tooltipDateFormat.format(date);
@@ -258,10 +342,11 @@ export default async (props, { $f7, $onMounted, $onBeforeUnmount }) => {
         {
           label: 'Berat Badan (kg)',
           color: '#E91E63',
-          values: [3.5, 4.0, 5.1, 4.0]
+          values: berat_history
         },
       ]
     });
+
 
 
 
@@ -285,12 +370,12 @@ export default async (props, { $f7, $onMounted, $onBeforeUnmount }) => {
               "background-color":"red"
             },
             {
-              "rule":"%v >= 20 && %v <= 40",
+              "rule":"%v >= 20 && %v <= 50",
               "background-color":"red"
             },
             {
-              "rule":"%v >= 40 && %v <= 60",
-              "background-color":"red"
+              "rule":"%v >= 50 && %v <= 60",
+              "background-color":"green"
             },
             {
               "rule":"%v >= 60 && %v <= 80",
@@ -298,7 +383,7 @@ export default async (props, { $f7, $onMounted, $onBeforeUnmount }) => {
             },
               {
               "rule":"%v >= 80 && %v <=100",
-              "background-color":"green"
+              "background-color":"blue"
             }
           ]
         },
@@ -325,7 +410,7 @@ export default async (props, { $f7, $onMounted, $onBeforeUnmount }) => {
   });
 
     $onBeforeUnmount(() => {
-      areaLines.destroy();
+      areaLines2.destroy();
     });
 
     let age = calculateAge(member.tgl_lahir);
@@ -334,7 +419,7 @@ export default async (props, { $f7, $onMounted, $onBeforeUnmount }) => {
     // list date
     let listDate = [];
     const now = new Date();
-    for (let i = -2; i <= 2; i++) {
+    for (let i = -2; i <= 3; i++) {
         const day = moment(today).add(i, 'days');
         if (day.isSame(moment(), 'day')) {
           listDate.push(formatDate(day,true));

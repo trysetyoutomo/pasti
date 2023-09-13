@@ -2,10 +2,13 @@
 import HomePage from '../pages/home.f7';
 import AboutPage from '../pages/about.f7';
 import FormPage from '../pages/form.f7';
+import TimbanganPage from '../pages/timbangan.f7';
 import CatalogPage from '../pages/catalog.f7';
 import ProductPage from '../pages/product.f7';
 import SettingsPage from '../pages/settings.f7';
 import AlarmPage from '../pages/alarm.f7';
+import Diskusi from '../pages/diskusi.f7';
+import DiskusiDetail from '../pages/diskusidetail.f7';
 
 import DynamicRoutePage from '../pages/dynamic-route.f7';
 import RequestAndLoad from '../pages/request-and-load.f7';
@@ -16,6 +19,10 @@ import Balita from '../pages/balita.f7';
 
 var routes = [
   {
+    path: '/timbangan',
+    component: TimbanganPage,
+  },
+  {
     path: '/',
     component: HomePage,
   },
@@ -24,15 +31,19 @@ var routes = [
     component: AboutPage,
   },
   {
-    path: '/balita/',
+    path: '/tracker/:id',
     component: Balita,
   },
   {
-    path: '/form/',
-    component: FormPage,
+    path: '/diskusi/',
+    component: Diskusi,
   },
   {
-    path: '/catalog/',
+    path: '/diskusi/:id',
+    component: DiskusiDetail,
+  },
+  {
+    path: '/question/',
     component: CatalogPage,
   },
   {

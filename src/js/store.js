@@ -3,6 +3,7 @@ import { createStore } from 'framework7';
 
 const store = createStore({
   state: {
+    API_ENDPOINT : "https://academy.valuestream.id",
     products: [
       {
         id: '1',

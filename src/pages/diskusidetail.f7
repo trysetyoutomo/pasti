@@ -1,0 +1,118 @@
+<template>
+    <div class="page" data-name="product">
+      <div class="navbar">
+        <div class="navbar-bg"></div>
+        <div class="navbar-inner sliding">
+          <div class="left">
+            <a href="#" class="link back">
+              <i class="icon icon-back"></i>
+              <span class="if-not-md">Back</span>
+            </a>
+          </div>
+          <div class="title">Pertanyaan</div>
+        </div>
+      </div>
+      <div class="page-content">
+        <div class="card" style="padding-bottom: 2rem;">
+        <div class="block">
+            <div class="" style="text-wrap:initial;font-weight: 600;">${pertanyaan.judul}</div>
+        </div>
+        <div class="block" style="font-size: smaller;">
+            ${moment(pertanyaan.tgl_pertanyaan).fromNow()}       
+         </div>
+        <br/>
+        <div class="block">
+        ${pertanyaan.pertanyaan}
+            <div style="margin-top: 1rem;">
+                ${pertanyaan.tag.map((t) => $h`
+                    <div class="chip color-red"><div class="chip-label">${t}</div></div>
+                `)}
+        </div>
+        </div>
+
+    
+      </div>
+      ${pertanyaan.jawaban.map((t) => $h`
+        <div class="card" style="padding-bottom: 1.5rem;">
+            <div style="display: flex;">
+                <div class="item">
+                    <i idx="${t.uid}" @click=${updatePositive} data-tooltip="Jawaban ini berguna" class="f7-icons tooltip-init">chevron_up</i>
+                    <div style="text-align: center;font-size: large;font-weight: 700;" class=" score ${t.score > 0 ? 'text-green' : 'text-red'}"  >${t.score}</div>
+                    <i idx="${t.uid}" @click=${updateNegative}   data-tooltip="Jawaban ini salah" class="f7-icons tooltip-init">chevron_down</i>
+                </div>
+                <div class="item">
+                    
+                    <div class="block">
+                    ${t.jawaban}
+                    </div>
+                    <p class="block" style="margin-top: 1rem;"> 
+                        <div class="" style="text-wrap:initial;font-weight: 500;font-size: small;">${t.uname}</div>
+                        <div class="" style="font-size: smaller;font-weight: 300;">
+                            ${moment(t.tgl_jawab).fromNow()}       
+                        </div>
+                    </p>
+                </div>
+            </div>
+        </div>
+            `)}
+
+
+
+  
+    </div>
+    </div>
+  </template>
+  <script>
+async function getPertanyaan(id){
+    if (localStorage.getItem('token') !== null){
+    try {
+        const apiUrl = `https://academy.valuestream.id/android/pasti/api/pertanyaan/${id}`;
+        const requestOptions = {
+          method: 'GET', // or 'POST', 'PUT', 'DELETE', etc. depending on your API request
+          headers: {
+            'Authorization': `Bearer ` +  localStorage.getItem('token'),
+            'Content-Type': 'application/json', // Adjust the content type as needed
+          },
+          // Add any other options as needed (e.g., body for POST requests)
+        };
+        const response = await fetch(apiUrl, requestOptions);
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();      
+        return data.data;
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+    }
+
+    export default async (props, { $f7, $route, $store , $update,}) => {
+    // console.log(props);
+      let pertanyaan = await getPertanyaan(props.id);
+
+    const updatePositive = (e) => {
+      $f7.preloader.show();
+      setTimeout(function(){
+        // var filteredArray = pertanyaan.jawaban.filter(item => item.uid === e.target.getAttribute('idx'));
+        // filteredArray.score = filteredArray[0].score + 1;
+        // pertanyaan.jawaban[0] = filteredArray;
+        //  pertanyaan.jawaban[].score++;
+        console.log(pertanyaan);
+        $f7.preloader.hide();
+        $update(); 
+      },1000)
+    }
+
+    const updateNegative = (e) => {
+      $f7.preloader.show();
+      setTimeout(function(){
+        // pertanyaan.jawaban[e.target.getAttribute('idx')].score--;
+        $f7.preloader.hide();
+        $update(); 
+      },1000)
+    }
+      return $render;
+    };
+  </script>
+  
