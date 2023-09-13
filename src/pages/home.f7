@@ -13,7 +13,7 @@
     <!-- Scrollable page content-->
     <div class="page-content">
       ${families.map((member) => $h`
-      <a href="/balita/">
+      <a href="/tracker/${member.jkn_id}">
       <div class="card demo-card-header-pic">
         <div style="background-image:url(${member.foto})" valign="bottom" class="card-header member-img">
           <span>${member.nama}</span>

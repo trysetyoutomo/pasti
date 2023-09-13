@@ -30,7 +30,7 @@ var routes = [
     component: AboutPage,
   },
   {
-    path: '/balita/',
+    path: '/tracker/:id',
     component: Balita,
   },
   {

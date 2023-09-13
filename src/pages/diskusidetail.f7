@@ -36,9 +36,9 @@
         <div class="card" style="padding-bottom: 1.5rem;">
             <div style="display: flex;">
                 <div class="item">
-                    <i data-tooltip="Jawaban ini berguna" class="f7-icons tooltip-init">chevron_up</i>
+                    <i idx="${t.uid}" @click=${updatePositive} data-tooltip="Jawaban ini berguna" class="f7-icons tooltip-init">chevron_up</i>
                     <div style="text-align: center;font-size: large;font-weight: 700;" class=" score ${t.score > 0 ? 'text-green' : 'text-red'}"  >${t.score}</div>
-                    <i  data-tooltip="Jawaban ini salah" class="f7-icons tooltip-init">chevron_down</i>
+                    <i idx="${t.uid}" @click=${updateNegative}   data-tooltip="Jawaban ini salah" class="f7-icons tooltip-init">chevron_down</i>
                 </div>
                 <div class="item">
                     
@@ -63,10 +63,10 @@
     </div>
   </template>
   <script>
-async function getPertanyaan(){
+async function getPertanyaan(id){
     if (localStorage.getItem('token') !== null){
     try {
-        const apiUrl = 'https://academy.valuestream.id/android/api/pertanyaan/1';
+        const apiUrl = `https://academy.valuestream.id/android/pasti/api/pertanyaan/${id}`;
         const requestOptions = {
           method: 'GET', // or 'POST', 'PUT', 'DELETE', etc. depending on your API request
           headers: {
@@ -87,8 +87,31 @@ async function getPertanyaan(){
     }
     }
 
-    export default async (props, { $f7route, $store }) => {
-    let pertanyaan = await getPertanyaan();
+    export default async (props, { $f7, $route, $store , $update,}) => {
+    // console.log(props);
+      let pertanyaan = await getPertanyaan(props.id);
+
+    const updatePositive = (e) => {
+      $f7.preloader.show();
+      setTimeout(function(){
+        // var filteredArray = pertanyaan.jawaban.filter(item => item.uid === e.target.getAttribute('idx'));
+        // filteredArray.score = filteredArray[0].score + 1;
+        // pertanyaan.jawaban[0] = filteredArray;
+        //  pertanyaan.jawaban[].score++;
+        console.log(pertanyaan);
+        $f7.preloader.hide();
+        $update(); 
+      },1000)
+    }
+
+    const updateNegative = (e) => {
+      $f7.preloader.show();
+      setTimeout(function(){
+        // pertanyaan.jawaban[e.target.getAttribute('idx')].score--;
+        $f7.preloader.hide();
+        $update(); 
+      },1000)
+    }
       return $render;
     };
   </script>

@@ -39,7 +39,7 @@
     async function getPertanyaan(){
     if (localStorage.getItem('token') !== null){
     try {
-        const apiUrl = 'https://academy.valuestream.id/android/api/pertanyaan';
+        const apiUrl = 'https://academy.valuestream.id/android/pasti/api/pertanyaan';
         const requestOptions = {
           method: 'GET', // or 'POST', 'PUT', 'DELETE', etc. depending on your API request
           headers: {
