@@ -11,46 +11,23 @@
     <div class="block-title">Alarm Bunda</div>
     <div class="list list-strong-ios list-dividers-ios list-outline-ios">
       <ul>
-        
-        ${member.aktivitas_rekomendasi.map((a) => $h`
-          <li>${a}</li>
-          `)}
-        <li>
-          <div class="item-content">
-            <div class="item-inner">
-              <div class="item-title">Minum Asam Folat</div>
-              <div class="item-after">
-                <label class="toggle toggle-init">
-                  <input type="checkbox" />
-                  <span class="toggle-icon"></span>
-                </label>
+        ${arrDataAlarm.alarm.map((a) => $h`
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">${a['judul_alarm']}</div>
+                <div class="item-after">
+                  <label class="toggle toggle-init">
+                    <input type="checkbox" />
+                    <span class="toggle-icon"></span>
+                  </label>
+                </div>
               </div>
             </div>
-          </div>
-        </li>
-        <li>
-          <div class="item-content">
-            <div class="item-inner">
-              <div class="item-title">USG Setiap tangga 20</div>
-              <div class="item-after">
-                <label class="toggle toggle-init">
-                  <input type="checkbox" />
-                  <span class="toggle-icon"></span>
-                </label>
-              </div>
-            </div>
-          </div>
-        </li>
+          </li>
+        `)}
       </ul>
     </div>
-
-    <!-- <div class="list inset list-strong">
-      <ul>
-        <li>
-          <a class="list-button color-red">Large Red Button</a>
-        </li>
-      </ul>
-    </div> -->
 
     <div class="block block-strong-ios block-outline-ios">
       <p>
@@ -132,14 +109,27 @@
 </div>
 </template>
 <script>
-  export default (props, { $, $on, $f7 }) => {
-    $on('pageInit', () => { 
-      // document.getElementsByName("tgl_timbang")[0].value = moment().format("YYYY-MM-DD");
-      // $('.convert-form-to-data').on('click', function () {
-      //   var formData = $f7.form.convertToData('#form');
-      // });
+  async function getDetailAlarm(){
+    try {
+      const apiUrl = 'https://academy.valuestream.id/android/pasti/api/alarm';
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();  
+        return data.data;
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
 
-      $('#btnSimpanAlarmBaru').on('click', function () {
+  export default async (props, { $, $on, $f7, $onMounted, $onBeforeUnmount }) => {
+
+    let arrDataAlarm = await getDetailAlarm();
+
+    console.log(arrDataAlarm);
+
+    $('#btnSimpanAlarmBaru').on('click', function () {
         var formData = $f7.form.convertToData('#form-alarm');
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
@@ -149,6 +139,8 @@
           "waktu_alarm": formData.waktu_alarm
         });
 
+        console.log(raw);
+
         var requestOptions = {
           method: 'POST',
           headers: myHeaders,
@@ -156,7 +148,7 @@
           redirect: 'follow'
         };
         $f7.preloader.show();
-        fetch("https://academy.valuestream.id/android/api/alarm/save", requestOptions)
+        fetch("https://academy.valuestream.id/android/pasti/api/alarm", requestOptions)
         .then(function(response){
           console.log(response.status);
           if (response.status === 200){
@@ -188,8 +180,8 @@
         })
         .catch(error => console.log('error', error));
         });
-        });
 
         return $render;
+
   }
 </script>
