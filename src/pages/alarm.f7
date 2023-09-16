@@ -112,7 +112,16 @@
   async function getDetailAlarm(){
     try {
       const apiUrl = 'https://academy.valuestream.id/android/pasti/api/alarm';
-      const response = await fetch(apiUrl);
+      const requestOptions = {
+          method: 'GET', // or 'POST', 'PUT', 'DELETE', etc. depending on your API request
+          headers: {
+            'Authorization': `Bearer ` +  localStorage.getItem('token'),
+            'Content-Type': 'application/json', // Adjust the content type as needed
+          },
+          // Add any other options as needed (e.g., body for POST requests)
+        };
+
+      const response = await fetch(apiUrl, requestOptions) ;
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
