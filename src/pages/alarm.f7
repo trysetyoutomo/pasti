@@ -1,0 +1,187 @@
+<template>
+<div class="page" data-name="alarm">
+  <div class="navbar">
+    <div class="navbar-bg"></div>
+    <div class="navbar-inner sliding">
+      <div class="title">Alarm</div>
+    </div>
+  </div>
+  <div class="page-content">
+
+    <div class="block-title">Alarm Bunda</div>
+    <div class="list list-strong-ios list-dividers-ios list-outline-ios">
+      <ul>
+        ${arrDataAlarm.alarm.map((a) => $h`
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">${a['judul_alarm']}</div>
+                <div class="item-after">
+                  <label class="toggle toggle-init">
+                    <input type="checkbox" />
+                    <span class="toggle-icon"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </li>
+        `)}
+      </ul>
+    </div>
+
+    <div class="block block-strong-ios block-outline-ios">
+      <p>
+        <a style="background-color: #E91E63;" class="button button-fill sheet-open" data-sheet=".demo-sheet-swipe-to-step">Buat Alarm Baru</a>
+      </p>
+    </div>
+    
+  </div>
+
+  <div class="sheet-modal demo-sheet-swipe-to-step sheet-modal-push" style="height: auto; --f7-sheet-swipe-step: 229px; display: none;">
+    <div class="sheet-modal-inner">
+      <div class="swipe-handler"></div>
+      <div class="sheet-modal-swipe-step">
+      
+        <!-- <div class="display-flex padding justify-content-space-between align-items-center">
+          <div style="font-size: 18px"><b>Total:</b></div>
+          <div style="font-size: 22px"><b>$500</b></div>          
+        </div> -->
+        
+        <form id="form-alarm">
+          <div class="list list-strong-ios list-dividers-ios list-outline-ios">
+            <ul>
+              <li>
+                <div class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-title item-label">Judul Alarm</div>
+                    <div class="item-input-wrap">
+                      <input type="text" placeholder="Judul Alarm" name="judul_alarm"/>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-title item-label">Waktu Alarm</div>
+                    <div class="item-input-wrap">
+                      <input type="time" placeholder="Birth day" value="2014-04-30" name="waktu_alarm" />
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="padding-horizontal padding-bottom">
+            <a style="background-color: #E91E63;" id="btnSimpanAlarmBaru" class="button button-large button-fill">Simpan Alarm Baru</a>
+            <!-- <div class="margin-top text-align-center">Swipe up for more details</div> -->
+          </div>
+        </form>
+
+      </div>
+      <!-- <div class="block-title block-title-medium margin-top">Your order:</div>
+      <div class="list no-hairlines">
+        <ul>
+          <li class="item-content">
+            <div class="item-inner">
+              <div class="item-title">Item 1</div>
+              <div class="item-after"><b>$200</b></div>
+            </div>
+          </li>
+          <li class="item-content">
+            <div class="item-inner">
+              <div class="item-title">Item 2</div>
+              <div class="item-after"><b>$180</b></div>
+            </div>
+          </li>
+          <li class="item-content">
+            <div class="item-inner">
+              <div class="item-title">Delivery</div>
+              <div class="item-after"><b>$120</b></div>
+            </div>
+          </li>
+        </ul>
+      </div> -->
+    </div>
+  </div>
+
+</div>
+</template>
+<script>
+  async function getDetailAlarm(){
+    try {
+      const apiUrl = 'https://academy.valuestream.id/android/pasti/api/alarm';
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();  
+        return data.data;
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+
+  export default async (props, { $, $on, $f7, $onMounted, $onBeforeUnmount }) => {
+
+    let arrDataAlarm = await getDetailAlarm();
+
+    console.log(arrDataAlarm);
+
+    $('#btnSimpanAlarmBaru').on('click', function () {
+        var formData = $f7.form.convertToData('#form-alarm');
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+          "judul_alarm": formData.judul_alarm,
+          "waktu_alarm": formData.waktu_alarm
+        });
+
+        console.log(raw);
+
+        var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: raw,
+          redirect: 'follow'
+        };
+        $f7.preloader.show();
+        fetch("https://academy.valuestream.id/android/pasti/api/alarm", requestOptions)
+        .then(function(response){
+          console.log(response.status);
+          if (response.status === 200){
+            // console.log("<Masuk>");
+            
+              var app = new Framework7({
+                // App root element
+                root: '#app',
+                // App Name
+                name: 'My App',
+                // ...
+                // Define your routes here
+                routes: [
+                  {
+                    path: '/alarm/',
+                    component: 'alarm', // The component to load for this route
+                  },
+                  // Define more routes as needed
+                ],
+              });
+
+
+            $f7.preloader.hide();
+            $f7.views.main.router.navigate('/alarm/');
+            // setTimeout(() => {
+            //   $f7.views.main.router.navigate('/alarm/')
+            // }, 100);
+          }
+        })
+        .catch(error => console.log('error', error));
+        });
+
+        return $render;
+
+  }
+</script>

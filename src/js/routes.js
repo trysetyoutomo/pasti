@@ -7,6 +7,7 @@ import FormIbuHamil from '../pages/form-ibu-hamil.f7';
 import CatalogPage from '../pages/catalog.f7';
 import ProductPage from '../pages/product.f7';
 import SettingsPage from '../pages/settings.f7';
+import AlarmPage from '../pages/alarm.f7';
 import Diskusi from '../pages/diskusi.f7';
 import DiskusiDetail from '../pages/diskusidetail.f7';
 
@@ -57,6 +58,10 @@ var routes = [
   {
     path: '/settings/',
     component: SettingsPage,
+  },,
+  {
+    path: '/alarm/',
+    component: AlarmPage,
   },
 
   {
