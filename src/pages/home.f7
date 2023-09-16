@@ -13,27 +13,64 @@
     <!-- Scrollable page content-->
     <div class="page-content">
       ${families.map((member) => $h`
-      <a href="/tracker/${member.jkn_id}">
-      <div class="card demo-card-header-pic">
+        <div class="card demo-card-header-pic">
+        <a @click=${bukaDetail}>
         <div style="background-image:url(${member.foto})" valign="bottom" class="card-header member-img">
+          ${member.tgl_akhir_haid != "" &&  member.status === 'ibu' ? $h`
+          <span style="font-weight: 600;">Calon Bayi Ny. ${member.nama}</span>
+          ` : $h`
           <span>${member.nama}</span>
+          `}
+
           <a data-tooltip="Terlindungi BPJS Kesehatan" class="tooltip-init">
               <i class="f7-icons"  style="color:#60ba60;position: absolute;right: 1rem;top:1rem;">checkmark_shield_fill</i>
           </a>
         </div>
+      </a>
         <div class="card-content card-content-padding">
+          ${member.status !== 'ibu' ? $h`
           <div class="grid grid-cols" style="margin-bottom: 1rem;">
             <div class="date"><i class="icon material-icons if-md">cake</i> <span style="top:3px;position: relative;">${moment(member.tgl_lahir, "YYYY-MM-DD").format("DD MMMM YYYY")}</span></div>
           </div>
-          
+
           <div class="grid grid-cols-3">
             <div class="text-left">Tinggi <br/> <span style="font-weight: 500;">${member.tinggi} cm</span></div>
             <div class="text-left">Berat Badan <br/> <span style="font-weight: 500;">${member.berat} kg</span></div>
             <div class="text-left">Usia <br/> <span style="font-weight: 500;">${calculateAge(member.tgl_lahir).years === 0 ? calculateAge(member.tgl_lahir).months + ' bulan' : calculateAge(member.tgl_lahir).years + ' tahun'} </span></div>
           </div>
+          ` : $h`
+   
+          `}
+
+          ${member.tgl_akhir_haid != "" &&  member.status === 'ibu' ? $h`
+          <div>
+            <div class="grid grid-cols-3">
+              <div class="text-left">Tinggi <br/> <span style="font-weight: 500;">${member.tinggi_janin} cm</span></div>
+              <div class="text-left">Berat Badan <br/> <span style="font-weight: 500;">${member.berat_janin} g</span></div>
+              <div class="text-left">Usia <br/> <span style="font-weight: 500;">${calculateAge(member.tgl_akhir_haid).years === 0 ? calculateAge(member.tgl_akhir_haid).months + ' bulan' : calculateAge(member.tgl_akhir_haid).years + ' tahun'} </span></div>
+            </div>
+          </div>
+          ` : $h`
+          `}
+
+
+
+          ${member.tgl_akhir_haid == "" &&  member.status === 'ibu' ? $h`
+          <div>
+            <div class="grid grid-cols-1">
+                <button jkn_id=${member.jkn_id} @click=${ibusedanghamil} style="border:1px solid #E91E63;color:#E91E63" class="button ">
+                  <span class="material-symbols-outlined">pregnancy</span> Ibu sedang hamil
+                </button>
+            </div>
+          </div>
+          ` : $h`
+          `}
+
+
+
         </div>
       </div>
-      </a>
+  
         `)}
     </div>
   </div>
@@ -104,6 +141,25 @@
 
 export default  async  function(props, {$f7,$onMounted, $store}){   
   let families = await getUsers();
+
+  const bukaDetail = (e) => {
+    $f7.views.main.router.navigate('/tracker/' + e.target.getAttribute('jkn_id') ,{
+      // props : {
+        // berat : berat,
+        // tinggi : tinggi,
+        // jkn_id : jkn_id
+      // }
+    });
+  }
+  const ibusedanghamil = (e) => {
+    $f7.views.main.router.navigate('/hamil/' + e.target.getAttribute('jkn_id') ,{
+      props : {
+        // berat : berat,
+        // tinggi : tinggi,
+        // jkn_id : jkn_id
+      }
+    });
+  }
 
   var tooltip = $f7.tooltip.get('.bpjs-link');
     // change tooltip text

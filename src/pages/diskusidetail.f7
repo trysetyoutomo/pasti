@@ -32,7 +32,7 @@
 
     
       </div>
-      ${pertanyaan.jawaban.map((t) => $h`
+      ${pertanyaan.jawaban.sort((a, b) => b.score - a.score).map((t) => $h`
         <div class="card" style="padding-bottom: 1.5rem;">
             <div style="display: flex;">
                 <div class="item">
@@ -90,15 +90,20 @@ async function getPertanyaan(id){
     export default async (props, { $f7, $route, $store , $update,}) => {
     // console.log(props);
       let pertanyaan = await getPertanyaan(props.id);
+      
 
     const updatePositive = (e) => {
       $f7.preloader.show();
       setTimeout(function(){
-        // var filteredArray = pertanyaan.jawaban.filter(item => item.uid === e.target.getAttribute('idx'));
-        // filteredArray.score = filteredArray[0].score + 1;
-        // pertanyaan.jawaban[0] = filteredArray;
-        //  pertanyaan.jawaban[].score++;
-        console.log(pertanyaan);
+        var targetUID = e.target.getAttribute("idx"); // The "jkn_id" value to search for
+        var jawabans  = pertanyaan.jawaban;
+        for (var i = 0; i < jawabans.length; i++) {
+            if (jawabans[i].uid === targetUID) {
+              jawabans[i].score ++
+                break; // Stop the loop once the item is found and updated
+            }
+        }
+        pertanyaan.jawaban = jawabans;
         $f7.preloader.hide();
         $update(); 
       },1000)
@@ -107,7 +112,15 @@ async function getPertanyaan(id){
     const updateNegative = (e) => {
       $f7.preloader.show();
       setTimeout(function(){
-        // pertanyaan.jawaban[e.target.getAttribute('idx')].score--;
+        var targetUID = e.target.getAttribute("idx"); // The "jkn_id" value to search for
+        var jawabans  = pertanyaan.jawaban;
+        for (var i = 0; i < jawabans.length; i++) {
+            if (jawabans[i].uid === targetUID) {
+              jawabans[i].score --;
+                break; // Stop the loop once the item is found and updated
+            }
+        }
+        pertanyaan.jawaban = jawabans;
         $f7.preloader.hide();
         $update(); 
       },1000)

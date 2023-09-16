@@ -22,7 +22,7 @@
     <div class="popover-inner">
       <div class="list">
         <ul>
-          <li><a href="/timbangan/" class="list-button popover-close">Masukan Timbangan Terbaru</a></li>
+          <li><a data-data-jknid="${member.jkn_id}" data-berat="${berat}" data-tinggi="${member.tinggi}" @click="${timbanganBaru}" class="list-button popover-close">Masukan Timbangan Terbaru</a></li>
         </ul>
       </div>
     </div>
@@ -41,13 +41,21 @@
 
     <div class="">  
     <div class="card">
-      Hi ${member.nama}
+      Hi
+      ${member.tgl_akhir_haid != "" &&  member.status === 'ibu' ? $h`
+       <span style="font-weight: 600;"> Calon Bayi Ny. ${member.nama}</span>
+      ` : $h`
+       <span> ${member.nama}</span>
+      `}
+
+
     <div class="grid grid-cols-1" style="font-size: 1.2rem;font-weight: 500;margin-bottom: 2rem;">
     ${ageDisplay}
     </div>
 
     <div class="block block-strong-ios block-outline-android">
-    <div class="area-chart area-chart-lines-2" ></div>
+      <img src="https://media.tenor.com/08YS6FJ-NVAAAAAC/fetus.gif" style="width: 100%;border-radius:1rem" />
+    <!-- <div class="area-chart area-chart-lines-2" ></div> -->
     </div>
 
     <div class="grid grid-cols-3" style="margin-bottom: 1rem;margin-top:1rem">
@@ -56,23 +64,6 @@
     <div class="text-center">Usia <br/> <b>${calculateAge(member.tgl_lahir).years === 0 ? calculateAge(member.tgl_lahir).months + ' bulan' : calculateAge(member.tgl_lahir).years + ' tahun'} </b></div>
   </div>
     </div>
-    <div class="card">
-    <h3>Stunting Meter</h3>
-		<div id='myChart' style="overflow: visible!important;"></div>
-    <h4 style="text-align: center;color:${growthStatusColor};position: relative;bottom:4rem">${growthStatus}</h4>
-    
-
-
-    ${growthStatus === 'Perkembangan rendah' ? $h`
-    <a href="https://www.nestlehealthscience.co.id/artikel/susu-untuk-naik-berat-badan-anak" style="position: relative;bottom:4rem" class="button button-outline external">
-      Lihat Artikel Rekomendasi</a>
-    <a @click=${bookingDokter}  style="position: relative;bottom:3rem" class="button button-outline external"><img src="https://play-lh.googleusercontent.com/FkmcR7in7-N8YvIZYBsYXQIvSGz6dBULJ9SlhvKsZC1NB21VFjX7zAXk_MI95daplQ" alt="logo" width="20" style="position: relative;top:2px;right: 6px;" /> Buat janji dengan Dokter Anak</a>
-   
-    ` : $h`
-      <p style="font-style: italic;position: relative;bottom:3rem">Hebat! Pertumbuhan anak adalah perjalanan yang penuh kebahagiaan dan tantangan. Nikmati setiap momen bersama mereka, terus jaga tumbuh kembang anak dengan baik!.</p>
-    `}
-
-  </div>
 
     <div class="card">
       <h3>Aktifitas yang perlu dilakukan</h3>
@@ -83,6 +74,40 @@
       </ul>
      
     </div>
+    <div class="card">
+    <h3>Stunting Meter</h3>
+		<div id='myChart' style="overflow: visible!important;"></div>
+    <h4 style="text-align: center;color:${growthStatusColor};position: relative;bottom:4rem">${growthStatus}</h4>
+    
+
+
+    ${growthStatus === 'Perkembangan rendah' || growthStatus == 'Pertumbuhan janin rendah'  ? $h`
+    <a href="https://www.nestlehealthscience.co.id/artikel/susu-untuk-naik-berat-badan-anak" style="position: relative;bottom:4rem" class="button button-outline external">
+      Baca Artikel terkait </a>
+    <a @click=${bookingDokter}  style="position: relative;bottom:3rem" class="button button-outline external"><img src="https://play-lh.googleusercontent.com/FkmcR7in7-N8YvIZYBsYXQIvSGz6dBULJ9SlhvKsZC1NB21VFjX7zAXk_MI95daplQ" alt="logo" width="20" style="position: relative;top:2px;right: 6px;" /> Buat janji dengan Dokter Anak</a>
+    ` : $h`
+      <p style="font-style: italic;position: relative;bottom:3rem">Hebat! Pertumbuhan anak adalah perjalanan yang penuh kebahagiaan dan tantangan. Nikmati setiap momen bersama mereka, terus jaga tumbuh kembang anak dengan baik!.</p>
+    `}
+
+    
+  </div>
+  ${growthStatus !== 'Perkembangan rendah' && $h`
+  <div class="card">
+    <h3>Pantau hari ini</h3>
+
+      ${questioner.filter((a) => { return a.show === true}).map((a) => $h`
+      <div style="min-height: 145px;">
+        <p>${a.pertanyaan}</p>
+        <div class="grid grid-cols-2" style="margin-bottom: 1rem;width: 70%;margin: 1rem auto;">
+          <button idx=${a.id} @click=${setYa} class="button button-outline button-round btn-next">Ya</button>
+          <button idx=${a.id} @click=${setTidak} class="button button-outline button-round" style="margin-left:5px">Tidak</button>
+        </div>
+      </div>
+      `)}
+  </div>
+  `}
+
+
   </div>
 
 
@@ -90,7 +115,7 @@
 </div>
 </template>
 <script>
-async function getDetailUser(){
+async function getDetailUser(id){
   try {
     const apiUrl = 'https://academy.valuestream.id/android/api/user/aktivitas';
     const response = await fetch(apiUrl);
@@ -149,6 +174,75 @@ function formatDate(date,today) {
 
     return {"day":moment(date).format('ddd'),"date":moment(date).format('DD'),'today':today};
 }
+
+function calculateGestationalAge(tanggalLahir) {
+    const today = new Date();
+    const birthDate = new Date(tanggalLahir);
+
+    // Menghitung perbedaan waktu dalam milidetik
+    const differenceInMilliseconds = today - birthDate;
+
+    // Menghitung usia janin dalam minggu
+    const usiaMinggu = differenceInMilliseconds / (1000 * 60 * 60 * 24 * 7);
+
+    return Math.floor(usiaMinggu); // Mengembalikan usia janin dalam minggu, dibulatkan ke bawah
+}
+
+function detectGrowthStatusJanin(usiaJanin, beratJanin, tinggiJanin) {
+    // Menghitung usia janin dalam minggu
+    const usiaJaninDalamMinggu = calculateGestationalAge(usiaJanin);
+
+    // Menentukan kelompok usia janin berdasarkan usia dalam minggu
+    let kelompokUsia;
+    if (usiaJaninDalamMinggu < 13) {
+        kelompokUsia = 'Trimester Pertama'; // Kurang dari 13 minggu (trimester pertama)
+    } else if (usiaJaninDalamMinggu >= 13 && usiaJaninDalamMinggu < 27) {
+        kelompokUsia = 'Trimester Kedua'; // 13-26 minggu (trimester kedua)
+    } else {
+        kelompokUsia = 'Trimester Ketiga'; // Lebih dari 26 minggu (trimester ketiga)
+    }
+
+    // Data standar pertumbuhan janin berdasarkan kelompok usia
+    const dataPertumbuhan = {
+        'Trimester Pertama': {
+            beratMin: 50, // Berat janin dalam gram
+            beratMax: 200,
+            tinggiMin: 14, // Panjang janin dalam sentimeter
+            tinggiMax: 28,
+        },
+        'Trimester Kedua': {
+            beratMin: 200,
+            beratMax: 1200,
+            tinggiMin: 28,
+            tinggiMax: 38,
+        },
+        'Trimester Ketiga': {
+            beratMin: 1200,
+            beratMax: 3500,
+            tinggiMin: 38,
+            tinggiMax: 52,
+        },
+    };
+
+    // Mendapatkan data pertumbuhan sesuai dengan kelompok usia
+    const dataSesuaiUsia = dataPertumbuhan[kelompokUsia];
+
+    // Melakukan pengecekan berat dan tinggi janin terhadap standar pertumbuhan yang sesuai
+    if (
+        beratJanin >= dataSesuaiUsia.beratMin &&
+        beratJanin <= dataSesuaiUsia.beratMax &&
+        tinggiJanin >= dataSesuaiUsia.tinggiMin &&
+        tinggiJanin <= dataSesuaiUsia.tinggiMax
+    ) {
+        return 'Pertumbuhan janin normal';
+    } else if (beratJanin < dataSesuaiUsia.beratMin || tinggiJanin < dataSesuaiUsia.tinggiMin) {
+        return 'Pertumbuhan janin rendah';
+    } else {
+        return 'Pertumbuhan janin tinggi';
+    }
+}
+
+
 
  function detectGrowthStatus(tanggalLahir, berat, tinggi) {
     // Data standar pertumbuhan berdasarkan kelompok usia
@@ -246,20 +340,74 @@ function sortByDateAscending(jsonArray, dateField) {
   return jsonArray;
 }
 
-export default async (props, { $f7, $onMounted, $onBeforeUnmount }) => {
+export default async (props, { $f7, $onMounted, $onBeforeUnmount, $update }) => {
 
+ 
+  // var swiper = new Swiper('.swiper-container', {
+  //   // Optional parameters
+  //   navigation: {
+  //     nextEl: '.swiper-button-next', // Selector for the next arrow
+  //     prevEl: '.swiper-button-prev', // Selector for the previous arrow
+  //   },
+  // });
+
+  let questioner = [{
+    pertanyaan : "Apakah anak Anda sudah mulai duduk sendiri tanpa bantuan pada ?",
+    jawaban : null,
+    id : 1,
+    show : true
+  }, 
+  {
+    pertanyaan : "Apakah Anda sudah memperkenalkan makanan padat kepada anak Anda ?",
+    jawaban : null,
+    id : 2,
+    show : false
+  }, 
+];
+
+// let questionerShow = questioner.filter((a) => { return a.show === true});
+// console.log(questionerShow);
+
+
+  const setYa = (e) => {
+    e.preventDefault();
+    let questioner2 = questioner
+    let TergetID = e.target.getAttribute('idx');
+      for (var i = 0; i < questioner2.length; i++) {
+        if (questioner2[i].id == TergetID) {
+            questioner2[i].jawaban = true;
+            questioner2[i].show = false;
+            // break; // Stop the loop once the item is found and updated
+        }
+
+      }
+      questioner = questioner2;
+      console.log(questioner);
+      $update();
+  }
+
+  const setTidak = (e) => {
+    let TergetID = e.target.getAttribute('id');
+      for (var i = 0; i < questioner.length; i++) {
+          if (questioner[i].id === TergetID) {
+            questioner[i].jawaban = true;
+              break; // Stop the loop once the item is found and updated
+          }
+      }
+      $update();
+  }
   const bookingDokter = () => {
     $f7.dialog.preloader('Demo booking menggunakan Mobile JKN .. ');
     setTimeout(function(){
-        document.querySelector(".dialog-title").textContent = "Menghubungi Mobile JKN ..";
+        document.querySelector(".dialog-title").textContent = "Menghubungi Mobile JKN.";
     },1000);
 
     setTimeout(function(){
-        document.querySelector(".dialog-title").textContent = "Booking jadwal faskes tingkat 1 .. ";
+        document.querySelector(".dialog-title").textContent = "Booking jadwal faskes tingkat 1. ";
     },2000);
 
     setTimeout(function(){
-        document.querySelector(".dialog-title").textContent = "Booking Berhasil, silahkan periksa Aplikasi Mobile JKN";
+        document.querySelector(".dialog-title").textContent = "Booking Berhasil, silahkan periksa Aplikasi Mobile JKN.";
     },4000);
     setTimeout(function(){
         $f7.dialog.close();
@@ -267,10 +415,30 @@ export default async (props, { $f7, $onMounted, $onBeforeUnmount }) => {
 
   }
   // let dates = [];
-  let member = await getDetailUser();
+  let jkn_id = props.id;
 
-  let berat_history = sortByDateAscending(member.berat_history,"tgl_timbang");
-  
+  let member = await getDetailUser(props.id);
+
+  const timbanganBaru = (e) => 
+  {
+    const berat = e.target.getAttribute('data-berat');
+    const tinggi = e.target.getAttribute('data-tinggi');
+    const jkn_id = e.target.getAttribute('data-jknid');
+
+    $f7.views.main.router.navigate('/timbangan/' + props.id,{
+      props : {
+        berat : berat,
+        tinggi : tinggi,
+        jkn_id : jkn_id
+      }
+    });
+  }
+  let berat_history;
+  if (member.tgl_akhir_haid === "")
+    berat_history= sortByDateAscending(member.berat_history,"tgl_timbang");
+  else
+    berat_history= sortByDateAscending(member.berat_history_janin,"tgl_timbang");
+
   let dates  = berat_history.map((a)=>{
     // return moment(a.tgl_timbang).format("DD MMM");
     return new Date(a.tgl_timbang);
@@ -284,7 +452,11 @@ export default async (props, { $f7, $onMounted, $onBeforeUnmount }) => {
   let berat = berat_history[berat_history.length - 1];
 
   // alert(member.tgl_lahir + " " +  member.berat + " "+ member.tinggi);
-  let growthStatus =  detectGrowthStatus(member.tgl_lahir, berat, member.tinggi);
+  let growthStatus;
+  if (member.tgl_akhir_haid === "")
+    growthStatus =  detectGrowthStatus(member.tgl_lahir, berat, member.tinggi);
+  else
+    growthStatus =  detectGrowthStatusJanin(member.tgl_akhir_haid, berat, member.tinggi_janin);
   // alert(growthStatus);
   let valueGauge;
 
@@ -413,7 +585,12 @@ export default async (props, { $f7, $onMounted, $onBeforeUnmount }) => {
       areaLines2.destroy();
     });
 
-    let age = calculateAge(member.tgl_lahir);
+    let age = null
+    if (member.tgl_akhir_haid === "")
+      age = calculateAge(member.tgl_lahir);
+    else
+      age = calculateAge(member.tgl_akhir_haid);
+
     let ageDisplay = `${age.years} tahun, ${age.months} bulan, ${age.days} hari`;
 
     // list date

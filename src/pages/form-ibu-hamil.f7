@@ -9,7 +9,7 @@
           <span class="if-not-md">Back</span>
         </a>
       </div>
-      <div class="title">Berat Badan </div>
+      <div class="title">Form Ibu Hamil </div>
     </div>
   </div>
   <div class="page-content">
@@ -19,9 +19,9 @@
         <li>
           <div class="item-content item-input">
             <div class="item-inner">
-              <div class="item-title item-label">Tanggal Timbang</div>
+              <div class="item-title item-label">Tanggal Terakhir Haid</div>
               <div class="item-input-wrap">
-                <input type="date" placeholder="Tanggal Timbang" name="tgl_timbang" value="" />
+                <input type="date" placeholder="Tanggal Terakhir Haid" name="tgl_akhir_haid" value="" />
               </div>
             </div>
           </div>
@@ -29,7 +29,7 @@
         <li>
           <div class="item-content item-input">
             <div class="item-inner">
-              <div class="item-title item-label">Berat Badan (kg)</div>
+              <div class="item-title item-label">Berat  Janin (Gr)</div>
               <div class="item-input-wrap">
                 <input type="number" placeholder="Berat Badan" value="${berat}" name="berat_badan" />
               </div>
@@ -39,7 +39,7 @@
         <li>
           <div class="item-content item-input">
             <div class="item-inner">
-              <div class="item-title item-label">Tinggi Badan (cm)</div>
+              <div class="item-title item-label">Tinggi Janin (Cm)</div>
               <div class="item-input-wrap">
                 <input type="number" placeholder="Tinggi Badan" value="${tinggi}" name="tinggi_badan" />
               </div>
@@ -93,7 +93,7 @@
 
         var raw = JSON.stringify({
           "jkn_id": props.id,
-          "tgl_timbang": formData.tgl_timbang,
+          "tgl_timbang": formData.tgl_akhir_haid,
           "berat_badan": formData.berat_badan,
           "tinggi_badan": formData.tinggi_badan,
           "keterangan": formData.keterangan
@@ -106,7 +106,7 @@
           redirect: 'follow'
         };
         $f7.preloader.show();
-        fetch("https://academy.valuestream.id/android/pasti/api/berat", requestOptions)
+        fetch("https://academy.valuestream.id/android/pasti/api/hamil", requestOptions)
         .then(function(response){
           if (response.status === 200){
             
