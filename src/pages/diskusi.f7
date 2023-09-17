@@ -7,6 +7,14 @@
         </div>
       </div>
       <div class="page-content">
+        <div class="fab fab-right-bottom">
+        
+          <a class="button button-fill sheet-open color-red" data-sheet=".tanya-sheet-push">
+            <span class="material-symbols-outlined">
+              post_add
+              </span>
+          </a>
+      </div>
         <div class="">
             <div class="list media-list list-outline-ios list-strong-ios list-dividers-ios">
                 <ul>
@@ -61,7 +69,16 @@
     }
 
 
-    export default  async  function(props, {$onMounted, $store}){   
+    export default  async  function(props, { $f7, $on, $onMounted, $store}){   
+      // let sheetPush;
+      // $on('pageInit', () => {
+      //   sheetPush = $f7.sheet.create({
+      //     el: '.demo-sheet-push',
+      //     push: true,
+      //     backdrop: true,
+      //   });
+      //   if (sheetPush) sheetPush.destroy();
+      // })
        
         let pertanyaan = await getPertanyaan();
         return $render;

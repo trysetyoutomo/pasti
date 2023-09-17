@@ -121,7 +121,7 @@
       `)}       
       ` : $h`
       <div style="min-height: 145px;text-align:center">
-        <h3>Terimakasih telah mengisi questioner!</h3>
+        <h3>Terimakasih telah mengisi questioner hari ini!</h3>
         ${adaJawabanTidak.length > 0  ? $h`
           <div>
             Silahkan baca rekomendasi artikel berikut ini 
@@ -221,6 +221,7 @@ function calculateGestationalAge(tanggalLahir) {
 }
 
 function detectGrowthStatusJanin(usiaJanin, beratJanin, tinggiJanin) {
+    beratJanin = beratJanin * 1000; // convert ke kilo gram
     // Menghitung usia janin dalam minggu
     const usiaJaninDalamMinggu = calculateGestationalAge(usiaJanin);
 
@@ -377,20 +378,40 @@ function sortByDateAscending(jsonArray, dateField) {
 // }
 
 export default async (props, { $f7, $onMounted, $onBeforeUnmount, $update }) => {
+  let member = await getDetailUser(props.id);
 
-  var questioner = [{
-    pertanyaan : "Apakah anak Anda sudah mulai duduk sendiri tanpa bantuan pada ?",
-    jawaban : null,
-    id : 1,
-    show : true
-  }, 
-  {
-    pertanyaan : "Apakah Anda sudah memperkenalkan makanan padat kepada anak Anda ?",
-    jawaban : null,
-    id : 2,
-    show : false
-  }, 
-];
+
+  var questioner = [];
+  if (member.tgl_akhir_haid !== ""){
+      var questioner = [{
+        pertanyaan : "Apakah Anda mengonsumsi suplemen vitamin atau obat yang diresepkan selama kehamilan ini ?",
+        jawaban : null,
+        id : 1,
+        show : true
+      }, 
+      {
+        pertanyaan : "Apakah Anda mengalami perubahan emosi atau perubahan mood selama kehamilan ini ?",
+        jawaban : null,
+        id : 2,
+        show : false
+      }, 
+    ];
+  }else{
+    var questioner = [{
+        pertanyaan : "Apakah anak Anda sudah mulai duduk sendiri tanpa bantuan pada ?",
+        jawaban : null,
+        id : 1,
+        show : true
+      }, 
+      {
+        pertanyaan : "Apakah Anda sudah memperkenalkan makanan padat kepada anak Anda ?",
+        jawaban : null,
+        id : 2,
+        show : false
+      }, 
+    ];
+
+  }
 
 let questionerFiltered = questioner.filter((a) => { return a.jawaban === null});
 let adaJawabanTidak = questioner.filter((a) => { return a.jawaban === false});
@@ -464,7 +485,6 @@ let adaJawabanTidak = questioner.filter((a) => { return a.jawaban === false});
   // let dates = [];
   let jkn_id = props.id;
 
-  let member = await getDetailUser(props.id);
   // console.log(member);
 
   const timbanganBaru = (e) => 
