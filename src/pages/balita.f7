@@ -97,7 +97,7 @@
 
 
     ${growthStatus === 'Perkembangan rendah' || growthStatus == 'Pertumbuhan janin rendah'  ? $h`
-    <a href="https://www.nestlehealthscience.co.id/artikel/susu-untuk-naik-berat-badan-anak" style="position: relative;bottom:4rem" class="button button-outline external">
+    <a href="https://www.nestlehealthscience.co.id/artikel/susu-untuk-naik-berat-badan-anak" style="position: relative;bottom:4rem;background-color: var(--f7-toggle-active-bg-color);color:white" class="button button-outline external">
       Baca Artikel terkait </a>
     <a @click=${bookingDokter}  style="position: relative;bottom:3rem" class="button button-outline external"><img src="https://play-lh.googleusercontent.com/FkmcR7in7-N8YvIZYBsYXQIvSGz6dBULJ9SlhvKsZC1NB21VFjX7zAXk_MI95daplQ" alt="logo" width="20" style="position: relative;top:2px;right: 6px;" /> Buat janji dengan Dokter Anak</a>
     ` : $h`
@@ -125,7 +125,7 @@
         ${adaJawabanTidak.length > 0  ? $h`
           <div>
             Silahkan baca rekomendasi artikel berikut ini 
-            <a style="margin-top: 1rem;" href="https://www.nestlehealthscience.co.id/artikel/susu-untuk-naik-berat-badan-anak" class="button button-outline external">
+            <a style="margin-top: 1rem;background-color: var(--f7-toggle-active-bg-color);color:white" href="https://www.nestlehealthscience.co.id/artikel/susu-untuk-naik-berat-badan-anak" class="button button-outline external">
               Baca Artikel terkait 
             </a>
           </div>

@@ -15,6 +15,41 @@
               </span>
           </a>
       </div>
+
+      <div class="sheet-modal tanya-sheet-push">
+        <div class="toolbar">
+          <div class="toolbar-inner">
+            <div class="left"><div class="block">Pertanyaan Baru</div></div>
+            <div class="right">
+              <a class="link sheet-close">Tutup</a>
+            </div>
+          </div>
+        </div>
+        <div class="sheet-modal-inner">
+          <div class="page-content">
+            <div class=""> 
+              <div class="list list-strong-ios list-dividers-ios inset-ios" style="padding-top: 0px;margin-top:5px">
+              <ul style="padding-top: 0px;">
+              <li class="item-content item-input" style="padding:0px">
+                <div class="item-media">
+                  <i class="icon demo-list-icon"></i>
+                </div>
+                <div class="item-inner">
+                  <div class="item-input-wrap">
+                    <textarea placeholder="Ketik pertanyaan" class=""></textarea>
+                  </div>
+                </div>
+              </li>
+              <li class="item-content">
+                  <button class="button button-fill " style="background-color: var(--f7-toggle-active-bg-color);">Simpan</button>
+              </li>
+            </ul>
+          </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
         <div class="">
             <div class="list media-list list-outline-ios list-strong-ios list-dividers-ios">
                 <ul>
@@ -70,15 +105,19 @@
 
 
     export default  async  function(props, { $f7, $on, $onMounted, $store}){   
-      // let sheetPush;
-      // $on('pageInit', () => {
-      //   sheetPush = $f7.sheet.create({
-      //     el: '.demo-sheet-push',
-      //     push: true,
-      //     backdrop: true,
-      //   });
-      //   if (sheetPush) sheetPush.destroy();
-      // })
+      let sheetPush;
+      $on('pageInit', () => {
+        try{
+          sheetPush = $f7.sheet.create({
+            el: '.tanya-sheet-push',
+            push: true,
+            backdrop: true,
+          });
+          if (sheetPush) sheetPush.destroy();
+        }catch(err){
+          console.log(err);
+        }
+      });
        
         let pertanyaan = await getPertanyaan();
         return $render;

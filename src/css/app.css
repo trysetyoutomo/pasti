@@ -1,3 +1,10 @@
+/* redefine color */
+:root {
+--f7-md-surface: #fff!important;
+--f7-toggle-active-bg-color: #E91E63!important;
+--f7-toggle-active-border-color:rgba(0,0,0,0);
+}
+
 /* iOS Cordova Tweak */
 .device-cordova.device-ios {
   height: 100vh;
@@ -199,4 +206,8 @@ body .block{
 
 i{
   cursor: pointer;
+}
+
+.md .item-input:not(.item-input-outline) .item-content::before, .md .item-input:not(.item-input-outline).item-content::before{
+  background-color: white!important;
 }
