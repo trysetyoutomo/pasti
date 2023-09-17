@@ -188,7 +188,8 @@
         document.querySelector(".dialog-title").textContent = "Mengalihkan ..";
         $f7.dialog.close();
         $f7.loginScreen.close();
-        $f7.views.main.router.navigate('/')
+        $f7.views.main.router.navigate('/');
+        window.location.reload();
         },3000);
        
       })
