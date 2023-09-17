@@ -58,7 +58,7 @@ var routes = [
   {
     path: '/settings/',
     component: SettingsPage,
-  },,
+  },
   {
     path: '/alarm/',
     component: AlarmPage,
