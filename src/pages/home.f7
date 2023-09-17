@@ -14,7 +14,7 @@
     <div class="page-content">
       ${families.map((member) => $h`
         <div class="card demo-card-header-pic">
-        <a @click=${bukaDetail}>
+        <a id=${member.jkn_id} @click=${bukaDetail}>
         <div style="background-image:url(${member.foto})" valign="bottom" class="card-header member-img">
           ${member.tgl_akhir_haid != "" &&  member.status === 'ibu' ? $h`
           <span style="font-weight: 600;">Calon Bayi Ny. ${member.nama}</span>
@@ -59,7 +59,7 @@
           <div>
             <div class="grid grid-cols-1">
                 <button jkn_id=${member.jkn_id} @click=${ibusedanghamil} style="border:1px solid #E91E63;color:#E91E63" class="button ">
-                  <span class="material-symbols-outlined">pregnancy</span> Ibu sedang hamil
+                  <span class="material-symbols-outlined">pregnancy</span> Ibunda sedang hamil
                 </button>
             </div>
           </div>
