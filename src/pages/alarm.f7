@@ -42,8 +42,11 @@
 
   <div class="sheet-modal demo-sheet-swipe-to-step sheet-modal-push" style="height: auto; --f7-sheet-swipe-step: 229px; display: none;">
     <div class="toolbar">
-      <div class="toolbar-inner justify-content-flex-end">
-        <a class="link sheet-close">Close</a>
+      <div class="toolbar-inner">
+        <div class="left"><div class="block">Alarm Baru</div></div>
+        <div class="right">
+          <a class="link sheet-close">Tutup</a>
+        </div>
       </div>
     </div>
     <div class="sheet-modal-inner">
