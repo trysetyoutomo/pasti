@@ -41,9 +41,9 @@
 
     <div class="">  
     <div class="card">
-      Hi
+      Halo
       ${member.tgl_akhir_haid != "" &&  member.status === 'ibu' ? $h`
-       <span style="font-weight: 600;"> Calon Bayi Ny. ${member.nama}</span>
+       <span style="font-weight: 600;"> Bundaku ... </span>
       ` : $h`
        <span> ${member.nama}</span>
       `}
@@ -54,15 +54,30 @@
     </div>
 
     <div class="block block-strong-ios block-outline-android">
-      <img src="https://media.tenor.com/08YS6FJ-NVAAAAAC/fetus.gif" style="width: 100%;border-radius:1rem" />
-    <!-- <div class="area-chart area-chart-lines-2" ></div> -->
-    </div>
+      ${member.tgl_akhir_haid != "" &&  member.status === 'ibu' ? $h`
+        <img alt="janin animation" src="https://media.tenor.com/08YS6FJ-NVAAAAAC/fetus.gif" style="width: 100%;border-radius:1rem" />
+      ` : $h`
+      ${member.tgl_akhir_haid}
+      ${member.status}
+        <div class="area-chart area-chart-lines-2" ></div>
+      `}
 
+    </div>
+    
+    ${member.tgl_akhir_haid != "" &&  member.status === 'ibu' ? $h`
     <div class="grid grid-cols-3" style="margin-bottom: 1rem;margin-top:1rem">
-    <div class="text-center">Tinggi <br/> <b>${member.tinggi} cm</b></div>
-    <div class="text-center">Berat Badan <br/> <b>${berat} kg</b></div>
-    <div class="text-center">Usia <br/> <b>${calculateAge(member.tgl_lahir).years === 0 ? calculateAge(member.tgl_lahir).months + ' bulan' : calculateAge(member.tgl_lahir).years + ' tahun'} </b></div>
-  </div>
+      <div class="text-center">Tinggi <br/> <b>${member.tinggi} cm</b></div>
+      <div class="text-center">Berat Badan <br/> <b>${berat/1000} kg</b></div>
+      <div class="text-center">Usia <br/> <b>${calculateAge(member.tgl_akhir_haid).years === 0 ? calculateAge(member.tgl_akhir_haid).months + ' bulan' : calculateAge(member.tgl_akhir_haid).years + ' tahun'} </b></div>
+    </div>
+    ` : $h`
+    <div class="grid grid-cols-3" style="margin-bottom: 1rem;margin-top:1rem">
+      <div class="text-center">Tinggi <br/> <b>${member.tinggi} cm</b></div>
+      <div class="text-center">Berat Badan <br/> <b>${berat} kg</b></div>
+      <div class="text-center">Usia <br/> <b>${calculateAge(member.tgl_lahir).years === 0 ? calculateAge(member.tgl_lahir).months + ' bulan' : calculateAge(member.tgl_lahir).years + ' tahun'} </b></div>
+    </div>
+    `}
+
     </div>
 
     <div class="card">
@@ -82,7 +97,7 @@
 
 
     ${growthStatus === 'Perkembangan rendah' || growthStatus == 'Pertumbuhan janin rendah'  ? $h`
-    <a href="https://www.nestlehealthscience.co.id/artikel/susu-untuk-naik-berat-badan-anak" style="position: relative;bottom:4rem" class="button button-outline external">
+    <a href="https://www.nestlehealthscience.co.id/artikel/susu-untuk-naik-berat-badan-anak" style="position: relative;bottom:4rem;background-color: var(--f7-toggle-active-bg-color);color:white" class="button button-outline external">
       Baca Artikel terkait </a>
     <a @click=${bookingDokter}  style="position: relative;bottom:3rem" class="button button-outline external"><img src="https://play-lh.googleusercontent.com/FkmcR7in7-N8YvIZYBsYXQIvSGz6dBULJ9SlhvKsZC1NB21VFjX7zAXk_MI95daplQ" alt="logo" width="20" style="position: relative;top:2px;right: 6px;" /> Buat janji dengan Dokter Anak</a>
     ` : $h`
@@ -91,11 +106,11 @@
 
     
   </div>
-  ${growthStatus !== 'Perkembangan rendah' && $h`
-  <div class="card">
-    <h3>Pantau hari ini</h3>
-
-      ${questioner.filter((a) => { return a.show === true}).map((a) => $h`
+  ${!['Perkembangan rendah','Pertumbuhan janin rendah'].includes(growthStatus)  ? $h`
+  <div class="card" style="max-height: 185px;overflow: hidden;">
+    ${questionerFiltered.length > 0  ? $h`
+      <h3>Pantau hari ini</h3>
+      ${questionerFiltered.map((a) => $h`
       <div style="min-height: 145px;">
         <p>${a.pertanyaan}</p>
         <div class="grid grid-cols-2" style="margin-bottom: 1rem;width: 70%;margin: 1rem auto;">
@@ -103,14 +118,31 @@
           <button idx=${a.id} @click=${setTidak} class="button button-outline button-round" style="margin-left:5px">Tidak</button>
         </div>
       </div>
-      `)}
+      `)}       
+      ` : $h`
+      <div style="min-height: 145px;text-align:center">
+        <h3>Terimakasih telah mengisi questioner hari ini!</h3>
+        ${adaJawabanTidak.length > 0  ? $h`
+          <div>
+            Silahkan baca rekomendasi artikel berikut ini 
+            <a style="margin-top: 1rem;background-color: var(--f7-toggle-active-bg-color);color:white" href="https://www.nestlehealthscience.co.id/artikel/susu-untuk-naik-berat-badan-anak" class="button button-outline external">
+              Baca Artikel terkait 
+            </a>
+          </div>
+        ` : $h`
+        <span class="material-symbols-outlined" style="font-size: 2.5rem;color: forestgreen;">
+          check_circle
+        </span>
+        `}  
+          
+      </div>
+    `}
   </div>
+  ` : $h`
+  <div></div>
   `}
 
-
   </div>
-
-
   </div>
 </div>
 </template>
@@ -189,6 +221,7 @@ function calculateGestationalAge(tanggalLahir) {
 }
 
 function detectGrowthStatusJanin(usiaJanin, beratJanin, tinggiJanin) {
+    beratJanin = beratJanin * 1000; // convert ke kilo gram
     // Menghitung usia janin dalam minggu
     const usiaJaninDalamMinggu = calculateGestationalAge(usiaJanin);
 
@@ -340,34 +373,63 @@ function sortByDateAscending(jsonArray, dateField) {
   return jsonArray;
 }
 
+// function isQuestionerAnswered(questioner){
+
+// }
+
 export default async (props, { $f7, $onMounted, $onBeforeUnmount, $update }) => {
+  let member = await getDetailUser(props.id);
 
- 
-  // var swiper = new Swiper('.swiper-container', {
-  //   // Optional parameters
-  //   navigation: {
-  //     nextEl: '.swiper-button-next', // Selector for the next arrow
-  //     prevEl: '.swiper-button-prev', // Selector for the previous arrow
-  //   },
-  // });
 
-  let questioner = [{
-    pertanyaan : "Apakah anak Anda sudah mulai duduk sendiri tanpa bantuan pada ?",
-    jawaban : null,
-    id : 1,
-    show : true
-  }, 
-  {
-    pertanyaan : "Apakah Anda sudah memperkenalkan makanan padat kepada anak Anda ?",
-    jawaban : null,
-    id : 2,
-    show : false
-  }, 
-];
+  var questioner = [];
+  if (member.tgl_akhir_haid !== ""){
+      var questioner = [{
+        pertanyaan : "Apakah Anda mengonsumsi suplemen vitamin atau obat yang diresepkan selama kehamilan ini ?",
+        jawaban : null,
+        id : 1,
+        show : true
+      }, 
+      {
+        pertanyaan : "Apakah Anda mengalami perubahan emosi atau perubahan mood selama kehamilan ini ?",
+        jawaban : null,
+        id : 2,
+        show : false
+      }, 
+    ];
+  }else{
+    var questioner = [{
+        pertanyaan : "Apakah anak Anda sudah mulai duduk sendiri tanpa bantuan pada ?",
+        jawaban : null,
+        id : 1,
+        show : true
+      }, 
+      {
+        pertanyaan : "Apakah Anda sudah memperkenalkan makanan padat kepada anak Anda ?",
+        jawaban : null,
+        id : 2,
+        show : false
+      }, 
+    ];
+
+  }
+
+let questionerFiltered = questioner.filter((a) => { return a.jawaban === null});
+let adaJawabanTidak = questioner.filter((a) => { return a.jawaban === false});
 
 // let questionerShow = questioner.filter((a) => { return a.show === true});
 // console.log(questionerShow);
 
+
+  const checkisAnswered = (e) => {
+    console.log(questioner);
+    let check =  questioner.filter((a) => { return a.jawaban === null});
+    if (check.length > 0){
+      return false;
+    }
+    return true;
+  }
+
+  checkisAnswered();
 
   const setYa = (e) => {
     e.preventDefault();
@@ -376,26 +438,32 @@ export default async (props, { $f7, $onMounted, $onBeforeUnmount, $update }) => 
       for (var i = 0; i < questioner2.length; i++) {
         if (questioner2[i].id == TergetID) {
             questioner2[i].jawaban = true;
-            questioner2[i].show = false;
-            // break; // Stop the loop once the item is found and updated
         }
 
       }
       questioner = questioner2;
-      console.log(questioner);
+      questionerFiltered = questioner.filter((a) => { return a.jawaban === null});
+      adaJawabanTidak = questioner.filter((a) => { return a.jawaban === false});
       $update();
   }
 
   const setTidak = (e) => {
-    let TergetID = e.target.getAttribute('id');
-      for (var i = 0; i < questioner.length; i++) {
-          if (questioner[i].id === TergetID) {
-            questioner[i].jawaban = true;
-              break; // Stop the loop once the item is found and updated
-          }
+    e.preventDefault();
+    let questioner2 = questioner
+    let TergetID = e.target.getAttribute('idx');
+      for (var i = 0; i < questioner2.length; i++) {
+        if (questioner2[i].id == TergetID) {
+            questioner2[i].jawaban = false;
+        }
+
       }
+      questioner = questioner2;
+      questionerFiltered = questioner.filter((a) => { return a.jawaban === null});
+      adaJawabanTidak = questioner.filter((a) => { return a.jawaban === false});
       $update();
   }
+
+  
   const bookingDokter = () => {
     $f7.dialog.preloader('Demo booking menggunakan Mobile JKN .. ');
     setTimeout(function(){
@@ -417,7 +485,7 @@ export default async (props, { $f7, $onMounted, $onBeforeUnmount, $update }) => 
   // let dates = [];
   let jkn_id = props.id;
 
-  let member = await getDetailUser(props.id);
+  // console.log(member);
 
   const timbanganBaru = (e) => 
   {
@@ -461,10 +529,10 @@ export default async (props, { $f7, $onMounted, $onBeforeUnmount, $update }) => 
   let valueGauge;
 
   let growthStatusColor = "red";
-    if (growthStatus === "Perkembangan tinggi"){
+    if (growthStatus === "Perkembangan tinggi" || growthStatus === "Pertumbuhan janin tinggi"){
       valueGauge = 100;
       growthStatusColor = "blue";
-    }else if (growthStatus === "Perkembangan normal"){
+    }else if (growthStatus === "Perkembangan normal" || growthStatus === "Pertumbuhan janin normal" ){
       valueGauge = 70;
       growthStatusColor = "green";
     }

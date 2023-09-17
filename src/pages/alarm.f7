@@ -3,18 +3,15 @@
   <div class="navbar">
     <div class="navbar-bg"></div>
     <div class="navbar-inner sliding">
-      <div class="left">
-        <a href="#" class="link back">
-          <i class="icon icon-back"></i>
-          <span class="if-not-md">Back</span>
+      <div class="title">Alarm Bunda</div>
+      <div class="right">
+        <a class="link sheet-open" data-sheet=".demo-sheet-swipe-to-step">
+          <span class="material-symbols-outlined">add_circle</span>
         </a>
       </div>
-      <div class="title">Alarm</div>
     </div>
   </div>
   <div class="page-content">
-
-    <div class="block-title">Alarm Bunda</div>
     <div class="list list-strong-ios list-dividers-ios list-outline-ios">
       <ul class="list-alarm">
         ${arrDataAlarm.alarm.map((a) => $h`
@@ -37,7 +34,7 @@
 
     <div class="block block-strong-ios block-outline-ios">
       <p>
-        <a style="background-color: #E91E63;" class="button button-fill sheet-open" data-sheet=".demo-sheet-swipe-to-step">Buat Alarm Baru</a>
+        <!-- <a style="background-color: #E91E63;" class="button button-fill sheet-open" data-sheet=".demo-sheet-swipe-to-step">Buat Alarm Baru</a> -->
       </p>
     </div>
     

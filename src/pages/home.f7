@@ -14,7 +14,7 @@
     <div class="page-content">
       ${families.map((member) => $h`
         <div class="card demo-card-header-pic">
-        <a @click=${bukaDetail}>
+          <a id=${member.jkn_id} @click=${bukaDetail}>
         <div style="background-image:url(${member.foto})" valign="bottom" class="card-header member-img">
           ${member.tgl_akhir_haid != "" &&  member.status === 'ibu' ? $h`
           <span style="font-weight: 600;">Calon Bayi Ny. ${member.nama}</span>
@@ -44,6 +44,12 @@
 
           ${member.tgl_akhir_haid != "" &&  member.status === 'ibu' ? $h`
           <div>
+            <div class="grid grid-cols" style="margin-bottom: 1rem;">
+              <div class="date">
+                <!-- <i class="icon material-icons if-md">cake</i> -->
+                <span data-tooltip="Tanggal Terakhir Haid"  style="top:5px;position: relative;" class=" tooltip-init material-symbols-outlined if-md">pregnancy</span>
+                <span style="top:0px;position: relative;">${moment(member.tgl_akhir_haid, "YYYY-MM-DD").format("DD MMMM YYYY")}</span></div>
+            </div>
             <div class="grid grid-cols-3">
               <div class="text-left">Tinggi <br/> <span style="font-weight: 500;">${member.tinggi_janin} cm</span></div>
               <div class="text-left">Berat Badan <br/> <span style="font-weight: 500;">${member.berat_janin} g</span></div>
@@ -59,7 +65,7 @@
           <div>
             <div class="grid grid-cols-1">
                 <button jkn_id=${member.jkn_id} @click=${ibusedanghamil} style="border:1px solid #E91E63;color:#E91E63" class="button ">
-                  <span class="material-symbols-outlined">pregnancy</span> Ibu sedang hamil
+                  <span class="material-symbols-outlined">pregnancy</span> Ibunda sedang hamil
                 </button>
             </div>
           </div>

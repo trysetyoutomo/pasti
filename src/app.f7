@@ -38,7 +38,7 @@
     <!-- Views/Tabs container -->
     <div class="views tabs safe-areas">
       <!-- Tabbar for switching views-tabs -->
-      <div class="toolbar toolbar-bottom tabbar-icons">
+      <div class="toolbar toolbar-bottom tabbar-icons" style="box-shadow: 1px 1px 6px 0px gray;">
         <div class="toolbar-inner">
           <a href="#view-home" class="tab-link tab-link-active">
             <i class="icon material-icons if-md">family_restroom</i>
@@ -188,7 +188,8 @@
         document.querySelector(".dialog-title").textContent = "Mengalihkan ..";
         $f7.dialog.close();
         $f7.loginScreen.close();
-        $f7.views.main.router.navigate('/')
+        $f7.views.main.router.navigate('/');
+        window.location.reload();
         },3000);
        
       })

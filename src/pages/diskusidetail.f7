@@ -13,6 +13,50 @@
         </div>
       </div>
       <div class="page-content">
+
+      <div class="fab fab-right-bottom">
+        
+          <a class="button button-fill sheet-open color-red" data-sheet=".demo-sheet-push">
+            <span class="material-symbols-outlined">
+              comment
+              </span>
+          </a>
+      </div>
+      <div class="sheet-modal demo-sheet-push">
+        <div class="toolbar">
+          <div class="toolbar-inner">
+            <div class="left"><div class="block">Jawab Pertanyaan ini</div></div>
+            <div class="right">
+              <a class="link sheet-close">Tutup</a>
+            </div>
+          </div>
+        </div>
+        <div class="sheet-modal-inner">
+          <div class="page-content">
+            <div class=""> 
+              <div class="list list-strong-ios list-dividers-ios inset-ios" style="padding-top: 0px;margin-top:5px">
+              <ul style="padding-top: 0px;">
+              <li class="item-content item-input" style="padding:0px">
+                <div class="item-media">
+                  <i class="icon demo-list-icon"></i>
+                </div>
+                <div class="item-inner">
+                  <div class="item-input-wrap">
+                    <textarea placeholder="Ketikan jawaban" class=""></textarea>
+                  </div>
+                </div>
+              </li>
+              <li class="item-content">
+                <button class="button button-fill " style="background-color: var(--f7-toggle-active-bg-color);">Simpan</button>
+              </li>
+            </ul>
+          </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+        
         <div class="card" style="padding-bottom: 2rem;">
         <div class="block">
             <div class="" style="text-wrap:initial;font-weight: 600;">${pertanyaan.judul}</div>
@@ -87,9 +131,23 @@ async function getPertanyaan(id){
     }
     }
 
-    export default async (props, { $f7, $route, $store , $update,}) => {
-    // console.log(props);
+    export default async (props, {$f7,$on,$route, $store , $update,}) => {
+
+      // console.log(props);
       let pertanyaan = await getPertanyaan(props.id);
+      let sheetPush;
+      $on('pageInit', () => {
+        try{
+          sheetPush = $f7.sheet.create({
+            el: '.demo-sheet-push',
+            push: true,
+            backdrop: true,
+          });
+          if (sheetPush) sheetPush.destroy();
+        }catch(err){
+          console.log(err);
+        }
+      });
       
 
     const updatePositive = (e) => {
