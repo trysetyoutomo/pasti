@@ -21,7 +21,11 @@
                 <div class="item-title">${a['judul_alarm']}</div>
                 <div class="item-after">
                   <label class="toggle toggle-init">
-                    <input type="checkbox" />
+                    ${a['status_alarm'] === "1" ? $h`
+                      <input type="checkbox" class="cekUpdate" data-id="${a['id']}" data-judul="${a['judul_alarm']}" data-waktu="${a['waktu_alarm']}" checked/>
+                    ` : $h`
+                      <input type="checkbox" class="cekUpdate" data-id="${a['id']}" data-judul="${a['judul_alarm']}" data-waktu="${a['waktu_alarm']}"/>
+                    `}
                     <span class="toggle-icon"></span>
                   </label>
                 </div>
@@ -145,13 +149,51 @@
   export default async (props, { $, $on, $f7, $onMounted, $onBeforeUnmount ,  $update}) => {
     let arrDataAlarm = await getDetailAlarm();
     $on('pageInit', () => {
-      $('#btnSimpanAlarmBaru').on('click', async function () {
-
-        // console.log("MASUK");
-        // $f7.views.main.router.navigate('/alarm/', {
-        //   reloadCurrent: true
-        // });
+      $('.cekUpdate').on('change', async function () {
+        var dataStatus = 0;
+        if(this.checked) {
+          var dataStatus = 1;
+        }
+        var dataId = $(this).attr('data-id');
+        var dataJudul = $(this).attr('data-judul');
+        var dataWaktu = $(this).attr('data-waktu');
+        
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Authorization", "Bearer " + localStorage.getItem("token") );
   
+        var raw = JSON.stringify({
+          "judul_alarm": dataJudul,
+          "waktu_alarm": dataWaktu,
+          "status_alarm": dataStatus
+        });
+        
+        var requestOptions = {
+          method: 'PUT',
+          headers: myHeaders,
+          body: raw,
+          redirect: 'follow'
+        };
+
+        $f7.preloader.show();
+        fetch("https://academy.valuestream.id/android/pasti/api/alarm/"+dataId , requestOptions)
+        .then(async function(response){
+          console.log(response);
+
+          if (response.status === 200){
+            $f7.preloader.hide();
+            // $('.sheet-close').trigger('click');
+            // arrDataAlarm = await getDetailAlarm();
+            // $update();
+          }
+        })
+        .catch(error => console.log('error', error));
+
+        // console.log("TEST");
+        // console.log(raw);
+      });
+
+      $('#btnSimpanAlarmBaru').on('click', async function () {
           var formData = $f7.form.convertToData('#form-alarm');
           var myHeaders = new Headers();
           myHeaders.append("Content-Type", "application/json");
@@ -171,7 +213,7 @@
           $f7.preloader.show();
           fetch("https://academy.valuestream.id/android/pasti/api/alarm", requestOptions)
           .then(async function(response){
-            console.log(response);
+            // console.log(response);
 
             if (response.status === 200){
               $('.sheet-close').trigger('click');
