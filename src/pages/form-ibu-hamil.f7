@@ -93,9 +93,9 @@
 
         var raw = JSON.stringify({
           "jkn_id": props.id,
-          "tgl_timbang": formData.tgl_akhir_haid,
-          "berat_badan": formData.berat_badan,
-          "tinggi_badan": formData.tinggi_badan,
+          "tgl_akhir_haid": formData.tgl_akhir_haid,
+          "berat_janin": formData.berat_badan,
+          "tinggi_janin": formData.tinggi_badan,
           "keterangan": formData.keterangan
         });
 
@@ -111,9 +111,7 @@
           if (response.status === 200){
             
             $f7.preloader.hide();
-            setTimeout(() => {
-              $f7.views.main.router.navigate('/tracker/' + props.jkn_id);
-            }, 100);
+            $f7.views.main.router.navigate('/tracker/' + props.id);
           }
         })
         .catch(error => console.log('error', error));

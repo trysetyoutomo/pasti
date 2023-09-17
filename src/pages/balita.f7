@@ -42,7 +42,7 @@
     <div class="">  
     <div class="card">
       Halo
-      ${member.tgl_akhir_haid != "" &&  member.status === 'ibu' ? $h`
+      ${member.hasOwnProperty("tgl_akhir_haid") &&  member.status === 'ibu' ? $h`
        <span style="font-weight: 600;"> Bundaku ... </span>
       ` : $h`
        <span> ${member.nama}</span>
@@ -54,20 +54,20 @@
     </div>
 
     <div class="block block-strong-ios block-outline-android">
-      ${member.tgl_akhir_haid != "" &&  member.status === 'ibu' ? $h`
+      ${member.hasOwnProperty('tgl_akhir_haid') &&  member.status === 'ibu' ? $h`
         <img alt="janin animation" src="https://media.tenor.com/08YS6FJ-NVAAAAAC/fetus.gif" style="width: 100%;border-radius:1rem" />
       ` : $h`
-      ${member.tgl_akhir_haid}
-      ${member.status}
+      <!-- ${member.tgl_akhir_haid}
+      ${member.status} -->
         <div class="area-chart area-chart-lines-2" ></div>
       `}
 
     </div>
     
-    ${member.tgl_akhir_haid != "" &&  member.status === 'ibu' ? $h`
+    ${member.hasOwnProperty("tgl_akhir_haid") &&  member.status === 'ibu' ? $h`
     <div class="grid grid-cols-3" style="margin-bottom: 1rem;margin-top:1rem">
-      <div class="text-center">Tinggi <br/> <b>${member.tinggi} cm</b></div>
-      <div class="text-center">Berat Badan <br/> <b>${berat/1000} kg</b></div>
+      <div class="text-center">Tinggi Janin <br/> <b>${member.tinggi_janin} cm</b></div>
+      <div class="text-center">Berat janin <br/> <b>${berat} kg</b></div>
       <div class="text-center">Usia <br/> <b>${calculateAge(member.tgl_akhir_haid).years === 0 ? calculateAge(member.tgl_akhir_haid).months + ' bulan' : calculateAge(member.tgl_akhir_haid).years + ' tahun'} </b></div>
     </div>
     ` : $h`
@@ -81,7 +81,7 @@
     </div>
 
     <div class="card">
-      <h3>Aktifitas yang perlu dilakukan</h3>
+      <h3>Aktifitas yang direkomendasikan</h3>
       <ul>
         ${member.aktivitas_rekomendasi.map((a) => $h`
         <li>${a}</li>
@@ -147,14 +147,24 @@
 </div>
 </template>
 <script>
-async function getDetailUser(id){
+async function getDetailUser(id, $f7){
   try {
-    const apiUrl = 'https://academy.valuestream.id/android/api/user/aktivitas';
-    const response = await fetch(apiUrl);
+    $f7.preloader.show();
+    // const apiUrl = 'https://academy.valuestream.id/android/api/user/aktivitas';
+    const apiUrl = 'https://academy.valuestream.id/android/pasti/api/aktivitas?jkn_id='+id+'&tanggal='+moment().format("YYYY-MM-DD");
+    const requestOptions = {
+      method: 'GET', // or 'POST', 'PUT', 'DELETE', etc. depending on your API request
+      headers: {
+        'Authorization': `Bearer ` +  localStorage.getItem('token'),
+        'Content-Type': 'application/json', // Adjust the content type as needed
+      }
+    };
+    const response = await fetch(apiUrl, requestOptions);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const data = await response.json();      
+    $f7.preloader.hide();
       return data.data;
   } catch (error) {
     console.error('Error fetching data:', error);
@@ -364,6 +374,7 @@ function detectGrowthStatusJanin(usiaJanin, beratJanin, tinggiJanin) {
 }
 
 function sortByDateAscending(jsonArray, dateField) {
+  console.log(jsonArray);
   jsonArray.sort(function (a, b) {
     const dateA = new Date(a[dateField]);
     const dateB = new Date(b[dateField]);
@@ -378,11 +389,11 @@ function sortByDateAscending(jsonArray, dateField) {
 // }
 
 export default async (props, { $f7, $onMounted, $onBeforeUnmount, $update }) => {
-  let member = await getDetailUser(props.id);
+  let member = await getDetailUser(props.id, $f7);
 
 
   var questioner = [];
-  if (member.tgl_akhir_haid !== ""){
+  if (!member.hasOwnProperty("tgl_akhir_haid")){
       var questioner = [{
         pertanyaan : "Apakah Anda mengonsumsi suplemen vitamin atau obat yang diresepkan selama kehamilan ini ?",
         jawaban : null,
@@ -421,7 +432,6 @@ let adaJawabanTidak = questioner.filter((a) => { return a.jawaban === false});
 
 
   const checkisAnswered = (e) => {
-    console.log(questioner);
     let check =  questioner.filter((a) => { return a.jawaban === null});
     if (check.length > 0){
       return false;
@@ -471,11 +481,11 @@ let adaJawabanTidak = questioner.filter((a) => { return a.jawaban === false});
     },1000);
 
     setTimeout(function(){
-        document.querySelector(".dialog-title").textContent = "Booking jadwal faskes tingkat 1. ";
+        document.querySelector(".dialog-title").textContent = "Booking faskes tingkat 1.";
     },2000);
 
     setTimeout(function(){
-        document.querySelector(".dialog-title").textContent = "Booking Berhasil, silahkan periksa Aplikasi Mobile JKN.";
+        document.querySelector(".dialog-title").textContent = "Booking Berhasil, Silahkan periksa Aplikasi Mobile JKN.";
     },4000);
     setTimeout(function(){
         $f7.dialog.close();
@@ -502,10 +512,12 @@ let adaJawabanTidak = questioner.filter((a) => { return a.jawaban === false});
     });
   }
   let berat_history;
-  if (member.tgl_akhir_haid === "")
-    berat_history= sortByDateAscending(member.berat_history,"tgl_timbang");
-  else
+
+  if (member.hasOwnProperty('tgl_akhir_haid'))
     berat_history= sortByDateAscending(member.berat_history_janin,"tgl_timbang");
+  else
+    berat_history= sortByDateAscending(member.berat_history,"tgl_timbang"); //
+
 
   let dates  = berat_history.map((a)=>{
     // return moment(a.tgl_timbang).format("DD MMM");
@@ -513,15 +525,21 @@ let adaJawabanTidak = questioner.filter((a) => { return a.jawaban === false});
   });
   
 
-  berat_history = berat_history.map((a)=>{
-    return a.berat
-  });
+  if (!member.hasOwnProperty("tgl_akhir_haid")){
+    berat_history = berat_history.map((a)=>{
+      return parseFloat(a.berat)
+    });
+  }else{
+    berat_history = berat_history.map((a)=>{
+      return parseFloat(a.berat_janin)
+    });
+  }
+  console.table(berat_history);
 
   let berat = berat_history[berat_history.length - 1];
 
-  // alert(member.tgl_lahir + " " +  member.berat + " "+ member.tinggi);
   let growthStatus;
-  if (member.tgl_akhir_haid === "")
+  if (!member.hasOwnProperty("tgl_akhir_haid"))
     growthStatus =  detectGrowthStatus(member.tgl_lahir, berat, member.tinggi);
   else
     growthStatus =  detectGrowthStatusJanin(member.tgl_akhir_haid, berat, member.tinggi_janin);
@@ -548,7 +566,6 @@ let adaJawabanTidak = questioner.filter((a) => { return a.jawaban === false});
   for (let i = 0; i < 4; i += 1) {
     dates.push(new Date(year, month - (3 - i)))
   }
-  console.log(dates);
   const axisDateFormat = Intl.DateTimeFormat(undefined, { month: 'short', year: 'numeric' })
   const tooltipDateFormat = Intl.DateTimeFormat(undefined, { month: 'long', year: 'numeric' })
   $onMounted(() => {
@@ -654,7 +671,7 @@ let adaJawabanTidak = questioner.filter((a) => { return a.jawaban === false});
     });
 
     let age = null
-    if (member.tgl_akhir_haid === "")
+    if (!member.hasOwnProperty("tgl_akhir_haid"))
       age = calculateAge(member.tgl_lahir);
     else
       age = calculateAge(member.tgl_akhir_haid);

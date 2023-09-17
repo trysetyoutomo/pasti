@@ -13,10 +13,10 @@
     <!-- Scrollable page content-->
     <div class="page-content">
       ${families.map((member) => $h`
-        <div class="card demo-card-header-pic">
-          <a id=${member.jkn_id} @click=${bukaDetail}>
-        <div style="background-image:url(${member.foto})" valign="bottom" class="card-header member-img">
-          ${member.tgl_akhir_haid != "" &&  member.status === 'ibu' ? $h`
+        <div jkn_id=${member.jkn_id} class="card demo-card-header-pic" @click=${bukaDetail}>
+        <a jkn_id=${member.jkn_id}>
+        <div jkn_id=${member.jkn_id}  style="background-image:url(${member.foto})" valign="bottom" class="card-header member-img">
+          ${ member.hasOwnProperty("tgl_akhir_haid")  &&  member.status === 'ibu' ? $h`
           <span style="font-weight: 600;">Calon Bayi Ny. ${member.nama}</span>
           ` : $h`
           <span>${member.nama}</span>
@@ -52,7 +52,7 @@
             </div>
             <div class="grid grid-cols-3">
               <div class="text-left">Tinggi <br/> <span style="font-weight: 500;">${member.tinggi_janin} cm</span></div>
-              <div class="text-left">Berat Badan <br/> <span style="font-weight: 500;">${member.berat_janin} g</span></div>
+              <div class="text-left">Berat Badan <br/> <span style="font-weight: 500;">${member.berat_janin} kg</span></div>
               <div class="text-left">Usia <br/> <span style="font-weight: 500;">${calculateAge(member.tgl_akhir_haid).years === 0 ? calculateAge(member.tgl_akhir_haid).months + ' bulan' : calculateAge(member.tgl_akhir_haid).years + ' tahun'} </span></div>
             </div>
           </div>
@@ -99,7 +99,9 @@
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        const data = await response.json();      
+        let data = await response.json();    
+        
+        
         return data.data.keluarga;
       } catch (error) {
         console.error('Error fetching data:', error);

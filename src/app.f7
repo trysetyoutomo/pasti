@@ -154,7 +154,7 @@
 
       $f7.dialog.preloader('Demo login menggunakan Mobile JKN .. ');
       setTimeout(function(){
-        document.querySelector(".dialog-title").textContent = "Login ..";
+        document.querySelector(".dialog-title").textContent = "Autentikasi .. ";
       },1000);
 
 
@@ -184,13 +184,17 @@
         setTimeout(function(){
         document.querySelector(".dialog-title").textContent = "Mendapatkan informasi data keluarga ..";
         },2000);
+        
         setTimeout(function(){
-        document.querySelector(".dialog-title").textContent = "Mengalihkan ..";
+          document.querySelector(".dialog-title").textContent = "Mengalihkan ..";
+        },3000);
+        
+        setTimeout(function(){
         $f7.dialog.close();
         $f7.loginScreen.close();
         $f7.views.main.router.navigate('/');
         window.location.reload();
-        },3000);
+        },4000);
        
       })
       .catch((error) => {
