@@ -141,10 +141,11 @@
     }
   }
 
-  export default async (props, { $, $on, $f7, $onMounted, $onBeforeUnmount }) => {
 
+  export default async (props, { $, $on, $f7, $onMounted, $onBeforeUnmount ,  $update}) => {
+    let arrDataAlarm = await getDetailAlarm();
     $on('pageInit', () => {
-      $('#btnSimpanAlarmBaru').on('click', function () {
+      $('#btnSimpanAlarmBaru').on('click', async function () {
 
         // console.log("MASUK");
         // $f7.views.main.router.navigate('/alarm/', {
@@ -169,30 +170,21 @@
           };
           $f7.preloader.show();
           fetch("https://academy.valuestream.id/android/pasti/api/alarm", requestOptions)
-          .then(function(response){
-            
-            const data = response.json();  
-            return data.data;
-
-            console.log(data.data);
+          .then(async function(response){
+            console.log(response);
 
             if (response.status === 200){
-              $f7.preloader.hide();
               $('.sheet-close').trigger('click');
-
-              $('.list-alarm').append('<li><div class="item-content"><div class="item-inner"><div class="item-title"></div><div class="item-after"><label class="toggle toggle-init"><input type="checkbox" /><span class="toggle-icon"></span></label></div></div></div></li>');
-
-              // navigator.app.loadUrl("alarm.html")
-              // setTimeout(() => {
-              //   $f7.views.main.router.navigate('/alarm/');
-              // }, 100);
+              arrDataAlarm = await getDetailAlarm();
+              $update();
+              $f7.preloader.hide();
             }
           })
           .catch(error => console.log('error', error));
       });
     });
 
-    let arrDataAlarm = await getDetailAlarm();
+  
 
     return $render;
 
