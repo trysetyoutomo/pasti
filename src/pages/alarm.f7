@@ -3,12 +3,10 @@
   <div class="navbar">
     <div class="navbar-bg"></div>
     <div class="navbar-inner sliding">
-      <div class="title">Alarm</div>
+      <div class="title">Alarm Bunda</div>
     </div>
   </div>
   <div class="page-content">
-
-    <div class="block-title">Alarm Bunda</div>
     <div class="list list-strong-ios list-dividers-ios list-outline-ios">
       <ul>
         ${arrDataAlarm.alarm.map((a) => $h`
