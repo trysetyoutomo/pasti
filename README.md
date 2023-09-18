@@ -32,3 +32,12 @@ npm start
 ```
 aplikasi telah siap diakses pada url berikut  http://localhost:5173/ 
 
+Figma (Desain & Flow)
+https://www.figma.com/file/nvUT578yPV4uzMrpaaD9Wf/Healthkathon-2023---Pasti?type=design&mode=design&t=vFSKDD90nVSMNxRX-1
+
+Github (Source Code)
+https://github.com/trysetyoutomo/pasti
+
+API Documentation (Postman Collection)
+https://tigalimautech.postman.co/workspace/Team-Workspace~3738b74d-f0bc-4459-86c0-cf12113aea49/collection/29640188-a7674386-ab72-4a99-a6b7-92093f0a0a73?action=share&creator=29640188
+
